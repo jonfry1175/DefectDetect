@@ -1,10 +1,10 @@
-LANGKAH LANGKAH PEMBUATAN API
+# SETUP SERVER EXPRESS WITH SEQUELIZE ORM
 
 1. pnpm init -y
 - untuk membuat package.json, package.json berfungsi untuk menyimpan informasi package/modul dalam aplikasi kita.
 - NPM = node package manager
 
-2. npm install <package_name>
+2. pnpm install <package_name>
 - untuk menginstall modul dari pnpm
 - pnpm install express pg sequelize dotenv cors bcrypt jsonwebtoken
 - pnpm install nodemon sequelize-cli --save-dev
@@ -21,19 +21,24 @@ LANGKAH LANGKAH PEMBUATAN API
 
 KONFIGURASI POSTGRES MENGGUNAKAN SEQUELIZE
 
-1. npx sequelize-cli init
+1. pnpx sequelize-cli init
 - untuk membuat initiation awal sequelize
 
 2. Konfigurasi database di dalam config.json
 
-3. npx sequelize-cli db:create
+3. pnpx sequelize-cli db:create
 - untuk membuat database lewat sequelize tanpa query manual
 
-4. npx sequelize-cli model:generate --name User --attributes name:string,password:string
+4. pnpx sequelize-cli model:generate --name User --attributes name:string,email:string,password:string,role_id:integer
+4. pnpx sequelize-cli model:generate --name Role --attributes name:string
+4. pnpx sequelize-cli model:generate --name Level --attributes name:string
+4. pnpx sequelize-cli model:generate --name Bug --attributes title:string,build_version:string,expected_result:string,actual_result:string,image:string,user_id:integer,severity_level_id:integer,priority_level_id:integer
 
 - untuk membuat class dan juga migrations
 
 
-5. npx sequelize-cli db:migrate 
+5. pnpx sequelize-cli db:migrate 
 - untuk melakukan migrations
 - agar table di buat
+
+![diagram](/docs/ERD.png)
