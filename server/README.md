@@ -41,4 +41,9 @@ KONFIGURASI POSTGRES MENGGUNAKAN SEQUELIZE
 - untuk melakukan migrations
 - agar table di buat
 
-![diagram](/docs/ERD.png)
+6. pnpx sequelize-cli db:seed --seed <nama-file-seeder>
+pnpx sequelize-cli db:seed:all
+- untuk melakukan seed data
+
+
+![diagram](/server/docs/ERD.png)
