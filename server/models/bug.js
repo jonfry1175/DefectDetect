@@ -27,14 +27,38 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Bug.init({
-    title: DataTypes.STRING,
-    build_version: DataTypes.STRING,
-    expected_result: DataTypes.STRING,
-    actual_result: DataTypes.STRING,
-    image: DataTypes.STRING,
-    user_id: DataTypes.INTEGER,
-    severity_level_id: DataTypes.INTEGER,
-    priority_level_id: DataTypes.INTEGER
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    build_version: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    expected_result: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    actual_result: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    image: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    severity_level_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    priority_level_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    }
   }, {
     sequelize,
     modelName: 'Bug',

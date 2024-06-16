@@ -12,9 +12,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
-      
-
-
       // level has many bugs
       Level.hasMany(models.Bug, { foreignKey: 'severity_level_id', as: 'SeverityLevelBugs' });
 
@@ -23,7 +20,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Level.init({
-    name: DataTypes.STRING
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    }
   }, {
     sequelize,
     modelName: 'Level',

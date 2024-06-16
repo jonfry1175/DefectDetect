@@ -13,14 +13,33 @@ module.exports = {
      * }], {});
     */
 
-    await queryInterface.bulkInsert('Roles', [
+    // await queryInterface.bulkInsert('Roles', [
+    //   {
+    //     name: 'QA',
+    //     createdAt: new Date(),
+    //     updatedAt: new Date()
+    //   },
+    //   {
+    //     name: 'Developer',
+    //     createdAt: new Date(),
+    //     updatedAt: new Date()
+    //   }
+    // ])
+
+    // create level data
+    await queryInterface.bulkInsert('Levels', [
       {
-        name: 'QA',
+        name: 'Low',
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        name: 'Developer',
+        name: 'Medium',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'High',
         createdAt: new Date(),
         updatedAt: new Date()
       }
