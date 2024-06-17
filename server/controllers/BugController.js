@@ -34,6 +34,8 @@ class BugController {
             res.status(500).json(err.message);
         }
     }
+
+    static async updateStatus(req, res) {}
 }
 
 module.exports = BugController
