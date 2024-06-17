@@ -8,6 +8,7 @@
     "start": "nodemon app.js",
     "migrate": "sequelize-cli db:migrate",
     "undo-all": "sequelize-cli db:migrate:undo:all",
+    "undo": "sequelize-cli db:migrate:undo",
     "seed": "sequelize-cli db:seed:all"
   },
   "keywords": [],

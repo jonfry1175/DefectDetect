@@ -29,35 +29,85 @@ module.exports = (sequelize, DataTypes) => {
   Bug.init({
     title: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          msg: 'Title cannot be empty'
+        },
+      }
     },
     build_version: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          msg: 'build version cannot be empty'
+        },
     },
+  },
     expected_result: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          msg: 'expected result cannot be empty'
+        },
+      }
     },
     actual_result: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          msg: 'actual result cannot be empty'
+        },
+      }
     },
     image: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          msg: 'image cannot be empty'
+        },
+      }
     },
     user_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          msg: 'user id cannot be empty'
+        },
+      }
     },
     severity_level_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          msg: 'severity level id cannot be empty'
+        },
+      }
     },
     priority_level_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          msg: 'priority level id cannot be empty'
+        },
+      }
+    },
+    is_solved: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          msg: 'is solved cannot be empty'
+        },
+      }
     }
   }, {
     sequelize,
