@@ -1,5 +1,6 @@
 const { User, Bug, Role } = require('../models');
-const { encryptPassword } = require('../helpers/bcrypt');
+const { encryptPassword, decryptPassword } = require('../helpers/bcrypt');
+const { tokenGenerator } = require('../helpers/jsonwebtoken');
 class UserController {
     static async getAll(req, res) {
         try {
@@ -58,6 +59,24 @@ class UserController {
 
 
 
+        }
+    }
+    static async login(req, res) {
+        try {
+            const { email, password } = req.body;
+            const emailFound = await User.findOne({ where: { email } });
+            if (!emailFound) {
+                return res.status(401).json({ message: ' Invalid email' });
+            }
+            const match = await decryptPassword(password, emailFound.password);
+            if (!match) {
+                return res.status(401).json({ message: 'Invalid password' });
+            }
+            const token = tokenGenerator({ id: emailFound.id, email: emailFound.email, role_id: emailFound.role_id });
+
+            res.status(200).json({ token });
+        } catch (error) {
+            res.status(500).json(error.message);
         }
     }
 }
