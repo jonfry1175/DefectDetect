@@ -33,6 +33,11 @@ module.exports = {
       priority_level_id: {
         type: Sequelize.INTEGER
       },
+      is_solved: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+        allowNull: false
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

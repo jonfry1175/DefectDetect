@@ -9,9 +9,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 app.use(cors());
 
-app.get("/", (req, res) => {
-    res.send("Hello World!");
-});
+const router = require("./routes");
+app.use("/api", router);
 
 app.listen(port, () => {
     console.log("Server started on port " + port);
