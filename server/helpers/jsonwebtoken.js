@@ -8,4 +8,8 @@ const tokenGenerator = (payload) => {
     return jwt.sign(payload, secret);
 }
 
-module.exports = { tokenGenerator }
+const tokenValidator = (token) => {
+    return jwt.verify(token, secret);
+}
+
+module.exports = { tokenGenerator, tokenValidator }
