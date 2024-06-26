@@ -10,6 +10,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axiosInstance from "../../lib/axios";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import {login} from "../../store/actions/authActions";
 
 const validateForm = z.object({
   email: z.string().email({
@@ -22,6 +24,7 @@ const validateForm = z.object({
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const form = useForm({
     mode: "onChange",
     defaultValues: {
@@ -37,7 +40,7 @@ const LoginPage = () => {
       const token = result.data.token
       const role_id = result.data.role_id
       if( result.status === 200 ) {
-        console.log(role_id)
+        dispatch(login(token, role_id))
         localStorage.setItem("token", token)
         toast.success("Login success")
         form.reset();
