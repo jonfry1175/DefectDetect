@@ -8,6 +8,8 @@ import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axiosInstance from "../../lib/axios";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const validateForm = z.object({
   email: z.string().email({
@@ -19,6 +21,7 @@ const validateForm = z.object({
 });
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const form = useForm({
     mode: "onChange",
     defaultValues: {
@@ -28,8 +31,29 @@ const LoginPage = () => {
     resolver: zodResolver(validateForm),
   });
 
-  const submitLogin = (data) => {
-    console.log(data);
+  const submitLogin = async (data) => {
+    try {
+      const result = await axiosInstance.post("/users/login", data);
+      const token = result.data.token
+      const role_id = result.data.role_id
+      if( result.status === 200 ) {
+        console.log(role_id)
+        localStorage.setItem("token", token)
+        toast.success("Login success")
+        form.reset();
+        navigate("/dashboard")
+      }
+    } catch (error) {
+      if(error.response) {
+        const errorMessage = error.response.data.message
+        if(errorMessage) {
+          toast.error(errorMessage)
+        }
+      } else {
+        console.log(error.message);
+        toast.error("server error")
+      }
+    }
   };
   return (
     <div className="min-vh-100">
@@ -40,10 +64,9 @@ const LoginPage = () => {
         <div className="col-12 col-lg-5 ">
           <Card className="h-100 d-flex align-items-center justify-content-center bg-danger-subtle">
             <LogoImg />
-            <Card.Title>Daftar Akun Baru</Card.Title>
+            <Card.Title>Masuk Dashboard</Card.Title>
             <Card.Body>
               <form onSubmit={form.handleSubmit(submitLogin)}>
-               
                 <Controller
                   name="email"
                   control={form.control}
@@ -69,7 +92,10 @@ const LoginPage = () => {
                   control={form.control}
                   render={({ field, fieldState }) => {
                     return (
-                      <Form.Group className="mb-3" controlId="formBasicPassword">
+                      <Form.Group
+                        className="mb-3"
+                        controlId="formBasicPassword"
+                      >
                         <Form.Label>Password</Form.Label>
                         <Form.Control
                           {...field}
@@ -84,7 +110,7 @@ const LoginPage = () => {
                     );
                   }}
                 />
-                
+
                 <button type="submit" className="btn btn-primary w-100">
                   Submit
                 </button>

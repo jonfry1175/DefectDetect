@@ -8,12 +8,15 @@ import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axiosInstance from "../../lib/axios";
+import { toast } from "sonner";
 
 const validateForm = z.object({
   name: z.string().min(3, {
     message: "Nama harus minimal 3 karakter",
   }).max(20, {
     message: "Nama harus kurang dari 20 karakter",
+  }).regex(/^[a-zA-Z\s]*$/, {
+    message: "Nama hanya boleh mengandung huruf dan spasi"
   }),
   email: z.string().email({
     message: "Format email tidak valid",
@@ -22,8 +25,8 @@ const validateForm = z.object({
     message: "Password wajib diisi",
   }),
   role_id: z.number().min(1, {
-    message: "Peran wajib diisi",
-  }),
+    message: "Role wajib dipilih",
+  }).optional()
 });
 
 const RegisterPage = () => {
@@ -38,14 +41,39 @@ const RegisterPage = () => {
     resolver: zodResolver(validateForm),
   });
 
-  const submitRegister = (data) => {
-    console.log(data);
+  const submitRegister = async (data) => {
+    try {
+      const result = await axiosInstance.post("/users/register", data);
+      if( result.status === 201 ) {
+        toast.success("Register success")
+        form.reset();
+      } 
+    } catch (error) {
+      if(error.response) {
+        const responseError = error.response
+      if(responseError.data.message === "Name already exists") {
+        toast.error("Nama Sudah Terdaftar")
+      } else if(responseError.data.message === "Email already exists") {
+        toast.error("Email Sudah Terdaftar")
+      }
+      } else {
+        console.log(error.message);
+        toast.error("server error")
+      }
+      console.log(error.response)
+      
+      
+    }
   };
 
   const getAllRoles = async () => {
-    const result = await axiosInstance.get("/roles");
-    setRoles(result.data);
-    console.log(result.data);
+    try {
+      const result = await axiosInstance.get("/roles")
+      setRoles(result.data)
+    } catch (error) {
+      console.log(error.message);
+      toast.error("server error")
+    }
   };
 
   useEffect(() => {
@@ -94,7 +122,7 @@ const RegisterPage = () => {
                         <Form.Control
                           {...field}
                           type="email"
-                          placeholder="Enter email"
+                          placeholder="example@gmail.com"
                           isInvalid={!!fieldState.error}
                         />
                         <Form.Control.Feedback type="invalid">
@@ -114,7 +142,7 @@ const RegisterPage = () => {
                         <Form.Control
                           {...field}
                           type="password"
-                          placeholder="Password"
+                          placeholder="Example123"
                           isInvalid={!!fieldState.error}
                         />
                         <Form.Control.Feedback type="invalid">
