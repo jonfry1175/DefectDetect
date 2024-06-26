@@ -41,7 +41,6 @@ const LoginPage = () => {
       const role_id = result.data.role_id
       if( result.status === 200 ) {
         dispatch(login(token, role_id))
-        localStorage.setItem("token", token)
         toast.success("Login success")
         form.reset();
         navigate("/dashboard")

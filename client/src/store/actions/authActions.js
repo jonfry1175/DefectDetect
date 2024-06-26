@@ -5,6 +5,7 @@ const login = (valToken, valRoleId) => ({
 
 const logout = () => ({
     type: "LOGOUT",
+    
 })
 
 export { login, logout }

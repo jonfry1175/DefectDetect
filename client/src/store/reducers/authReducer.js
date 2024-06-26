@@ -2,13 +2,14 @@ const valToken = localStorage.getItem("token")
 
 const DEFAULT_STATE = {
     token: valToken,
-    isAuthenticated: !!valToken, // jika token ada, isAuthenticated bernilai true
+    isAuthenticated: !!valToken, // true or false/convert to boolean
     roleId: null
 }
 
 export const authReducer = (state = DEFAULT_STATE, action) => {
     switch (action.type) {
         case "LOGIN":
+            localStorage.setItem("token", action.payload.token)
             return {
                 ...state,
                 isAuthenticated: true,
@@ -16,10 +17,12 @@ export const authReducer = (state = DEFAULT_STATE, action) => {
                 roleId: action.payload.roleId
             }
         case "LOGOUT":
+            localStorage.removeItem("token")
             return {
                 ...state,
                 token: null,
-                isAuthenticated: false
+                isAuthenticated: false,
+                roleId: null
             }
         default:
             return state
