@@ -74,7 +74,7 @@ class UserController {
             }
             const token = tokenGenerator({ id: emailFound.id, email: emailFound.email, role_id: emailFound.role_id });
 
-            res.status(200).json({ token });
+            res.status(200).json({ token,  role_id: emailFound.role_id });
         } catch (error) {
             res.status(500).json(error.message);
         }
