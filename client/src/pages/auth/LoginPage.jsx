@@ -42,7 +42,6 @@ const LoginPage = () => {
       if( result.status === 200 ) {
         dispatch(login(token, role_id))
         toast.success("Login success")
-        form.reset();
         navigate("/dashboard")
       }
     } catch (error) {
