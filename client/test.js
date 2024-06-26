@@ -6,4 +6,5 @@ function test(x, y) {
     return temp
     
 }
-console.log(test("*", 3))
+
+console.log(test("a", 5))

@@ -3,8 +3,8 @@ import { Route, Routes } from 'react-router-dom'
 import Loader from './components/Loader'
 const HomePage = lazy(() => import('./pages/HomePage'))
 const Notfound = lazy(() => import('./components/Notfound'))
-const LoginPage = lazy(() => import('./pages/LoginPage'))
-const RegisterPage = lazy(() => import('./pages/RegisterPage'))
+const LoginPage = lazy(() => import('./pages/auth/LoginPage'))
+const RegisterPage = lazy(() => import('./pages/auth/RegisterPage'))
 
 
 const App = () => {
@@ -17,7 +17,6 @@ const App = () => {
         <Route path='/login' element={<LoginPage />} />
         <Route path='/register' element={<RegisterPage />} />
         <Route path='*' element={<Notfound />} />
-
       </Routes>
       </Suspense>
     </div>
