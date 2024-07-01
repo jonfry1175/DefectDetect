@@ -11,7 +11,8 @@ import axiosInstance from "../../lib/axios";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import {login} from "../../store/actions/authActions";
+import { login } from "../../store/actions/authActions";
+import { NotAuth } from "../../hoc/checkAuth";
 
 const validateForm = z.object({
   email: z.string().email({
@@ -37,22 +38,20 @@ const LoginPage = () => {
   const submitLogin = async (data) => {
     try {
       const result = await axiosInstance.post("/users/login", data);
-      const token = result.data.token
-      const role_id = result.data.role_id
-      if( result.status === 200 ) {
-        dispatch(login(token, role_id))
-        toast.success("Login success")
-        navigate("/dashboard")
+      if (result.status === 200) {
+        dispatch(login(result.data));
+        toast.success("Login success");
+        navigate("/dashboard");
       }
     } catch (error) {
-      if(error.response) {
-        const errorMessage = error.response.data.message
-        if(errorMessage) {
-          toast.error(errorMessage)
+      if (error.response) {
+        const errorMessage = error.response.data.message;
+        if (errorMessage) {
+          toast.error(errorMessage);
         }
       } else {
         console.log(error.message);
-        toast.error("server error")
+        toast.error("server error");
       }
     }
   };
@@ -129,4 +128,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default NotAuth(LoginPage);

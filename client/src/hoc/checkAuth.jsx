@@ -1,11 +1,11 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 
-const checkAuth = (WrappedComponent) => {
+const IsAuth = (WrappedComponent) => {
     const authHoc = (props) => {
-        const isAuth = useSelector(state => state.auth.isAuthenticated) 
-        if (!isAuth) {
+        const auth = useSelector(state => state.auth) 
+        if (!auth.authData) {
             return <Navigate to="/login" />
         }
         return <WrappedComponent {...props} />
@@ -14,4 +14,20 @@ const checkAuth = (WrappedComponent) => {
     return authHoc
 }
 
-export default checkAuth
+const NotAuth = (WrappedComponent) => {
+    const authHoc = (props) => {
+        const auth = useSelector(state => state.auth) 
+        const location = useLocation()
+        if (auth.authData) {
+            // mengembalikan ke navigasi sebelumnya
+            return <Navigate to={location.state?.from || "/dashboard"} />
+        }
+
+        return <WrappedComponent {...props} />
+    }
+
+    return authHoc
+}
+
+
+export { IsAuth, NotAuth }

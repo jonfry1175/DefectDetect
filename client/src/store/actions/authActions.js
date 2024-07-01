@@ -1,6 +1,6 @@
-const login = (valToken, valRoleId) => ({
+const login = (user) => ({
     type: "LOGIN",
-    payload: { token: valToken, roleId: valRoleId },
+    payload: {user},
 })
 
 const logout = () => ({

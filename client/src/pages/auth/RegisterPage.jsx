@@ -9,6 +9,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axiosInstance from "../../lib/axios";
 import { toast } from "sonner";
+import { NotAuth } from "../../hoc/checkAuth";
 
 const validateForm = z.object({
   name: z.string().min(3, {
@@ -196,4 +197,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default NotAuth(RegisterPage);
