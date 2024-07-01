@@ -1,5 +1,5 @@
 const DEFAULT_STATE = {
-    authData: localStorage.getItem("user") || null
+    authData: JSON.parse(localStorage.getItem("user")) || null
 }
 
 export const authReducer = (state = DEFAULT_STATE, action) => {

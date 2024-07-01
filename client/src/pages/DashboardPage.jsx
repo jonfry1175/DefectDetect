@@ -9,11 +9,11 @@ const DashboardPage = () => {
   const navigate = useNavigate()
 
     const reduxData = useSelector(state => state.auth)
-    const role =  localStorage.getItem("roleId")
-    const QA_ID = import.meta.env.VITE_QA_ROLE_ID
-    const DEV_ID = import.meta.env.VITE_DEV_ROLE_ID
-    const matchQA = role === QA_ID
-    const matchDev = role === DEV_ID
+    const roleId = reduxData.authData?.role_id
+    const QA_ID = +import.meta.env.VITE_QA_ROLE_ID
+    const DEV_ID = +import.meta.env.VITE_DEV_ROLE_ID
+    const matchQA = roleId === QA_ID
+    const matchDev = roleId === DEV_ID
 
     const checkRedux = () => {
         console.log(reduxData.authData)
@@ -24,7 +24,7 @@ const DashboardPage = () => {
     const checkRole = () => {
         console.log( matchQA,matchDev)
         // console.log(typeof role)
-        // console.log(role)
+        // console.log(typeof roleId)
         // console.log(typeof QA_ID)
     }
     const toLogin = () => (navigate('/login'))
