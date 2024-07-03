@@ -11,9 +11,8 @@ const DashboardPage = lazy(() => import('./pages/DashboardPage'))
 
 const App = () => {
   return (
-    <>
+    <div className='bg-dark text-light'>
     <Toaster position='top-center' />
-    <div className="bg-dark text-light min-vh-100">
       <Suspense fallback={<Loader />}>
       <Routes>
         <Route path='/' element={<HomePage />} />
@@ -24,7 +23,6 @@ const App = () => {
       </Routes>
       </Suspense>
     </div>
-    </>
   )
 }
 
