@@ -18,7 +18,8 @@ class BugController {
 
     static async create(req, res) {
         try {
-            const { title, build_version, expected_result, actual_result, image, user_id, severity_level_id, priority_level_id, is_solved } = req.body;
+            const { title, build_version, expected_result, actual_result, image, severity_level_id, priority_level_id, is_solved } = req.body;
+            const user_id = req.user.id;
             const newBug = await Bug.create({
                 title,
                 build_version,
