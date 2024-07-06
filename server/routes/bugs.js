@@ -11,7 +11,7 @@ bugRouter.get(
 bugRouter.post(
     "/create",
     authMiddleware,
-    // checkRoleQA,
+    checkRoleQA,
     BugController.create
 );
 
