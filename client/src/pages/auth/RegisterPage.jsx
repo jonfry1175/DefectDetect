@@ -10,34 +10,46 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axiosInstance from "../../lib/axios";
 import { toast } from "sonner";
 import { NotAuth } from "../../hoc/checkAuth";
+import { useDispatch, useSelector } from "react-redux";
+import { setRole } from "../../store/actions/roleActions";
+import { useNavigate } from "react-router-dom";
 
 const validateForm = z.object({
-  name: z.string().min(3, {
-    message: "Nama harus minimal 3 karakter",
-  }).max(20, {
-    message: "Nama harus kurang dari 20 karakter",
-  }).regex(/^[a-zA-Z\s]*$/, {
-    message: "Nama hanya boleh mengandung huruf dan spasi"
-  }),
+  name: z
+    .string()
+    .min(3, {
+      message: "Nama harus minimal 3 karakter",
+    })
+    .max(20, {
+      message: "Nama harus kurang dari 20 karakter",
+    })
+    .regex(/^[a-zA-Z\s]*$/, {
+      message: "Nama hanya boleh mengandung huruf dan spasi",
+    }),
   email: z.string().email({
     message: "Format email tidak valid",
   }),
   password: z.string().min(1, {
     message: "Password wajib diisi",
   }),
-  role_id: z.number().min(1, {
-    message: "Role wajib dipilih",
-  }).optional()
+  role_id: z
+    .number().positive({
+      message: "role wajib diisi",
+    })
 });
 
 const RegisterPage = () => {
-  const [roles, setRoles] = useState([]);
+  const dispatch = useDispatch();
+  const global = useSelector((state) => state);
+  const roles = global.role.roles
+  const navigate = useNavigate()
   const form = useForm({
     mode: "onChange",
     defaultValues: {
       name: "",
       email: "",
       password: "",
+      role_id: 0,
     },
     resolver: zodResolver(validateForm),
   });
@@ -45,41 +57,41 @@ const RegisterPage = () => {
   const submitRegister = async (data) => {
     try {
       const result = await axiosInstance.post("/users/register", data);
-      if( result.status === 201 ) {
-        toast.success("Register success")
+      if (result.status === 201) {
+        toast.success("Register success");
         form.reset();
-      } 
-    } catch (error) {
-      if(error.response) {
-        const responseError = error.response
-      if(responseError.data.message === "Name already exists") {
-        toast.error("Nama Sudah Terdaftar")
-      } else if(responseError.data.message === "Email already exists") {
-        toast.error("Email Sudah Terdaftar")
+        navigate("/login");
       }
+
+    } catch (error) {
+      if (error.response) {
+        const responseError = error.response;
+        if (responseError.data.message === "Name already exists") {
+          toast.error("Nama Sudah Terdaftar");
+        } else if (responseError.data.message === "Email already exists") {
+          toast.error("Email Sudah Terdaftar");
+        }
       } else {
         console.log(error.message);
-        toast.error("server error")
+        toast.error("server error");
       }
-      console.log(error.response)
-      
-      
+      console.log(error.response);
     }
   };
 
   const getAllRoles = async () => {
     try {
-      const result = await axiosInstance.get("/roles")
-      setRoles(result.data)
+      const result = await axiosInstance.get("/roles");
+      dispatch(setRole(result.data));
     } catch (error) {
       console.log(error.message);
-      toast.error("server error")
+      toast.error("server error");
     }
   };
 
   useEffect(() => {
     getAllRoles();
-  }, []);
+  }, []); 
 
   return (
     <div className="min-vh-100">
@@ -138,7 +150,10 @@ const RegisterPage = () => {
                   control={form.control}
                   render={({ field, fieldState }) => {
                     return (
-                      <Form.Group className="mb-3" controlId="formBasicPassword">
+                      <Form.Group
+                        className="mb-3"
+                        controlId="formBasicPassword"
+                      >
                         <Form.Label>Password</Form.Label>
                         <Form.Control
                           {...field}
@@ -158,16 +173,21 @@ const RegisterPage = () => {
                   control={form.control}
                   render={({ field, fieldState }) => {
                     return (
-                      <Form.Group className="mb-3" controlId="formBasicPassword">
+                      <Form.Group
+                        className="mb-3"
+                        controlId="formBasicPassword"
+                      >
                         <Form.Label>Role</Form.Label>
                         <Form.Select
                           {...field}
+                          required
                           isInvalid={!!fieldState.error}
-                          onChange={(e) => field.onChange(parseInt(e.target.value))}
+                          onChange={(e) => field.onChange(Number(e.target.value))}
                         >
+                          <option value={0} disabled>Pilih Role</option>
                           {roles.map((role) => {
                             return (
-                              <option key={role.id} value={role.id}>
+                              <option key={role.id} value={role.id} >
                                 {role.name}
                               </option>
                             );

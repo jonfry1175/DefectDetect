@@ -1,7 +1,15 @@
 import { Navbar, Container, Button, Nav } from "react-bootstrap";
+import { useDispatch,  } from "react-redux";
 import { Link } from "react-router-dom";
+import { logout } from "../store/actions/authActions";
+import { toast } from "sonner";
 
 const NavBar = () => {
+  const dispatch = useDispatch()
+  const logOut = () => {
+    dispatch(logout())
+    toast.success("Logout Success")
+  }
   return (
     <Navbar className="bg-danger" expand="lg" variant="">
       <Container>
@@ -17,7 +25,8 @@ const NavBar = () => {
               </Navbar.Text>
             </Nav.Item>
             <Nav.Item className="my-1 my-lg-0 ms-lg-2">
-              <Button
+              <Button 
+                onClick={logOut}
                 variant="outline-dark"
                 className=" w-100 w-lg-auto d-lg-inline-block d-block"
               >

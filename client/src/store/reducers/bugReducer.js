@@ -4,7 +4,7 @@ const DEFAULT_STATE = {
 
 export const bugReducer = (state = DEFAULT_STATE, action) => {
     switch (action.type) {
-        case "ADD_BUG":
+        case "SET_BUGS":
             return {
                 ...state,
                 bugs: action.payload.bugs

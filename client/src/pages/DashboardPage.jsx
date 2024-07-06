@@ -11,6 +11,7 @@ import Loader from "../components/Loader";
 import { hideAction, showAction } from "../store/actions/showAction";
 import {Modal, Button} from "react-bootstrap"
 import ModalCreate from "../components/ModalCreate";
+import { toast } from "sonner";
 
 const DashboardPage = () => {
   const globalState = useSelector((state) => state);
@@ -35,18 +36,26 @@ const DashboardPage = () => {
           Authorization: `Bearer ${dataAuth.authData.token}`,
         },
       });
+      const token = localStorage.getItem("user");
+      console.log(token.token);
       dispatch(addBug(result.data));
     } catch (error) {
       console.log(error);
+      toast.error("server error");
     }
   };
 
   const handleClose = () => dispatch(hideAction());
   const handleShow = () => dispatch(showAction());
 
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  }
+
   useEffect(() => {
     getAllBug();
-    console.log(show)
+    console.log(globalState) 
   }, [show]);
 
   return (
@@ -55,6 +64,9 @@ const DashboardPage = () => {
         <h1 className="fw-bold">Dashboard</h1>
         <Button variant="primary" onClick={handleShow}>
         create bug
+      </Button>
+      <Button variant="danger" onClick={handleLogout}>
+        logout
       </Button>
       <Modal show={show} onHide={handleClose}>
         <ModalCreate/>
