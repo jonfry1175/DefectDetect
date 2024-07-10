@@ -5,7 +5,7 @@ import { IsAuth } from "../hoc/checkAuth";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import axiosInstance from "../lib/axios";
-import { addBug } from "../store/actions/bugActions";
+import { setBug } from "../store/actions/bugActions";
 import CardBug from "../components/cards/CardBug";
 import Loader from "../components/Loader";
 import { hideModalBugdetail, hideModalCreate, showModalBugdetail, showModalCreate } from "../store/actions/showAction";
@@ -41,16 +41,40 @@ const DashboardPage = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      dispatch(addBug(result.data));
+      dispatch(setBug(result.data));
     } catch (error) {
       console.log(error);
       toast.error("server error");
     }
   };
 
-  const handleShowBugModal = () => dispatch(showModalBugdetail());
-  const handleCloseBugModal = () => dispatch(hideModalBugdetail());
-  const handleClose = () => dispatch(hideModalCreate());
+  const [bugDetail, setBugDetail] = useState(null);
+
+  const getBugDetailById = async (id) => {
+    try {
+      const result = await axiosInstance.get(`/bugs/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      setBugDetail(result.data)
+    } catch (error) {
+      console.log(error.message)
+      toast.error("server error");
+    }
+  }
+
+  const handleShowBugModal = (id) => {
+    getBugDetailById(id)
+    dispatch(showModalBugdetail());
+  };
+  const handleCloseBugModal = () => {
+    dispatch(hideModalBugdetail())
+    setBugDetail(null)
+  };
+  const handleClose = () => {
+    dispatch(hideModalCreate())
+  };
   const handleShow = () => dispatch(showModalCreate());
 
   const handleLogout = () => {
@@ -95,7 +119,7 @@ const DashboardPage = () => {
   const confirmChangeStatus = (id) => {
     showConfirmAlert(
       "Are you sure?",
-      "Do you want to change status?",
+      "Do you want to solve this bug?",
       () => changeStatus(id),
       () => {}
     );
@@ -103,11 +127,16 @@ const DashboardPage = () => {
 
   useEffect(() => {
     getAllBug();
+    // console.log(dataBug.length)
     // console.log(globalState);
     // console.log(matchDev);
     // console.log(dataBug);
     // console.log(dataBug);
-  }, [show]);
+    // console.log(bugDetail)
+    console.log(dataBug.length)
+
+  }, [dataBug]);
+
 
   return (
     <div>
@@ -129,7 +158,20 @@ const DashboardPage = () => {
         </Modal>
         {/* modal view bug */}
         <Modal show={bugModalDetail} onHide={handleCloseBugModal}>
-          <ModalBug onClose={handleCloseBugModal} />
+          <ModalBug 
+          onClose={handleCloseBugModal} 
+          title={bugDetail?.title}
+          image={bugDetail?.image}
+          actualResult={bugDetail?.actual_result}
+          expectedResult={bugDetail?.expected_result}
+          createdBy={bugDetail?.User?.name}
+          buildVersion={bugDetail?.build_version}
+          priorityLevel={bugDetail?.PriorityLevel?.name}
+          severityLevel={bugDetail?.SeverityLevel?.name}
+          status={bugDetail?.is_solved}
+          roleId={roleId}
+          onClick={() => confirmChangeStatus(bugDetail?.id)}
+          />
         </Modal>
         <div className="">
           <div className="">
@@ -148,7 +190,7 @@ const DashboardPage = () => {
                   createdBy={data.User?.name}
                   severityLevel={data.SeverityLevel?.name}
                   onClick={() => confirmChangeStatus(data.id)}
-                  onClickView={handleShowBugModal}
+                  onClickView={() => handleShowBugModal(data.id)}
                   roleId={roleId}
                 />
               ))

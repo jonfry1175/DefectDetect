@@ -10,6 +10,7 @@ import axiosInstance from "../../lib/axios";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { addBug } from "../../store/actions/bugActions";
 
 function ModalCreate() {
   const reduxData = useSelector((state) => state);
@@ -77,9 +78,11 @@ function ModalCreate() {
       )
 
       if (result.status === 201) {
+        dispatch(addBug(result.data))
         toast.success("success");
         form.reset();
         handleClose();
+        
       }
     } catch (error) {
       console.log(error.response);
