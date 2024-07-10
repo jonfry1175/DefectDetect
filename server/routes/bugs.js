@@ -21,4 +21,10 @@ bugRouter.put(
     checkRoleDev,
     BugController.changeIsSolved
 );
+
+bugRouter.get(
+    "/:id",
+    authMiddleware,
+    BugController.getBugById
+)
 module.exports = bugRouter

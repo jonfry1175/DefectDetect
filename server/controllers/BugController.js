@@ -58,5 +58,24 @@ class BugController {
             res.status(500).json(err.message);
         }
     }
+
+    static async getBugById(req, res) {
+        try {
+            const id = +req.params.id;
+            const foundId = await Bug.findByPk(id, {
+                include: [
+                    { model: User },
+                    { model: Level, as: 'SeverityLevel' },
+                    { model: Level, as: 'PriorityLevel' }
+                ]
+            });
+            if (!foundId) {
+                return res.status(404).json({ message: 'Bug not found' });
+            }
+            res.status(200).json(foundId);
+        } catch (err) {
+            res.status(500).json(err.message);
+        }
+    }
 }
 module.exports = BugController
