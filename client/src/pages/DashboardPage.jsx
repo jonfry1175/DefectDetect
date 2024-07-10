@@ -133,8 +133,13 @@ const DashboardPage = () => {
     // console.log(dataBug);
     // console.log(dataBug);
     // console.log(bugDetail)
-    console.log(dataBug.length)
+    // console.log(dataBug.length)
 
+  }, []);
+
+  useEffect(() => {
+    // getAllBug();
+    console.log(dataBug.length)
   }, [dataBug]);
 
 
@@ -154,7 +159,7 @@ const DashboardPage = () => {
         </Button>
          {/* modal create bug */}
         <Modal show={modalCreate} onHide={handleClose}>
-          <ModalCreate />
+          <ModalCreate handleFetchData={getAllBug} />
         </Modal>
         {/* modal view bug */}
         <Modal show={bugModalDetail} onHide={handleCloseBugModal}>
@@ -175,7 +180,8 @@ const DashboardPage = () => {
         </Modal>
         <div className="">
           <div className="">
-            {dataBug.length === 0 ? (
+            {
+            dataBug.length === 0 ? (
               <Loader />
             ) : (
               dataBug.map((data) => (

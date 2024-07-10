@@ -12,7 +12,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addBug } from "../../store/actions/bugActions";
 
-function ModalCreate() {
+function ModalCreate({handleFetchData}) {
   const reduxData = useSelector((state) => state);
   const level = reduxData.level.level;
   const dataAuth = reduxData.auth.authData;
@@ -81,6 +81,7 @@ function ModalCreate() {
         dispatch(addBug(result.data))
         toast.success("success");
         form.reset();
+        handleFetchData();
         handleClose();
         
       }
@@ -93,6 +94,10 @@ function ModalCreate() {
   useEffect(() => {
     getLevel();
   }, []);
+
+  // useEffect(() => {
+  //   console.log(reduxData.bug.bugs);
+  // }, [reduxData.bug.bugs]);
 
   return (
     <>
