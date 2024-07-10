@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/actions/authActions";
 import { NotAuth } from "../../hoc/checkAuth";
+import { jwtDecode } from "jwt-decode";
 
 const validateForm = z.object({
   email: z.string().email({
@@ -39,9 +40,16 @@ const LoginPage = () => {
     try {
       const result = await axiosInstance.post("/users/login", data);
       if (result.status === 200) {
-        dispatch(login(result.data));
         toast.success("Login success");
-        navigate("/dashboard");
+        const decoded = jwtDecode(result.data)
+        const combined = {
+          ...decoded,
+          token: result.data
+        }
+        setTimeout(() => {
+          dispatch(login(combined));
+          navigate("/dashboard");
+        }, 1000);
       }
     } catch (error) {
       if (error.response) {

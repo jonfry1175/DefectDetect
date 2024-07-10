@@ -1,13 +1,29 @@
 const DEFAULT_STATE = {
-    show: false
+    showBugModal: false,
+    showBugModalCreate: false,
 }
 
 export const showReducer = (state = DEFAULT_STATE, action) => {
     switch (action.type) {
-        case "SHOW":
+        case "SHOW_BUG_MODAL_DETAIL":
             return {
                 ...state,
-                show: true
+                showBugModal: true
+            }
+            case "HIDE_BUG_MODAL_DETAIL":
+            return {
+                ...state,
+                showBugModal: false
+            }
+        case "SHOW_BUG_MODAL_CREATE":
+            return {
+                ...state,
+                showBugModalCreate: true
+            }
+        case "HIDE_BUG_MODAL_CREATE":
+            return {
+                ...state,
+                showBugModalCreate: false
             }
         case "HIDE":
             return {

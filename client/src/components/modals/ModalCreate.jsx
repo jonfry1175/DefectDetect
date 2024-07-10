@@ -3,10 +3,10 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { hideAction } from "../store/actions/showAction";
+import {  hideModalCreate } from "../../store/actions/showAction";
 import { toast } from "sonner";
-import { setLevel } from "../store/actions/levelActions";
-import axiosInstance from "../lib/axios";
+import { setLevel } from "../../store/actions/levelActions";
+import axiosInstance from "../../lib/axios";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -59,7 +59,7 @@ function ModalCreate() {
     }
   };
 
-  const handleClose = () => dispatch(hideAction());
+  const handleClose = () => dispatch(hideModalCreate());
 
   const handleCreate = async (data) => {
     try {

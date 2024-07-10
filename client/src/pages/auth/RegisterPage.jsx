@@ -32,17 +32,16 @@ const validateForm = z.object({
   password: z.string().min(1, {
     message: "Password wajib diisi",
   }),
-  role_id: z
-    .number().positive({
-      message: "role wajib diisi",
-    })
+  role_id: z.number().positive({
+    message: "role wajib diisi",
+  }),
 });
 
 const RegisterPage = () => {
   const dispatch = useDispatch();
   const global = useSelector((state) => state);
-  const roles = global.role.roles
-  const navigate = useNavigate()
+  const roles = global.role.roles;
+  const navigate = useNavigate();
   const form = useForm({
     mode: "onChange",
     defaultValues: {
@@ -59,10 +58,13 @@ const RegisterPage = () => {
       const result = await axiosInstance.post("/users/register", data);
       if (result.status === 201) {
         toast.success("Register success");
-        form.reset();
-        navigate("/login");
+        setTimeout(() => {
+          form.reset();
+          navigate("/login");
+        }, 1000);
+        // form.reset();
+        // navigate("/login");
       }
-
     } catch (error) {
       if (error.response) {
         const responseError = error.response;
@@ -91,7 +93,7 @@ const RegisterPage = () => {
 
   useEffect(() => {
     getAllRoles();
-  }, []); 
+  }, []);
 
   return (
     <div className="min-vh-100">
@@ -182,12 +184,16 @@ const RegisterPage = () => {
                           {...field}
                           required
                           isInvalid={!!fieldState.error}
-                          onChange={(e) => field.onChange(Number(e.target.value))}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
                         >
-                          <option value={0} disabled>Pilih Role</option>
+                          <option value={0} disabled>
+                            Pilih Role
+                          </option>
                           {roles.map((role) => {
                             return (
-                              <option key={role.id} value={role.id} >
+                              <option key={role.id} value={role.id}>
                                 {role.name}
                               </option>
                             );
