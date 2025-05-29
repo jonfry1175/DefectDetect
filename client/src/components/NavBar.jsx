@@ -2,14 +2,19 @@ import { Navbar, Container, Button, Nav, Badge, Offcanvas } from "react-bootstra
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { logout } from "../store/actions/authActions";
-import { toggleDarkMode } from "../store/actions/showAction";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
+import { useTheme } from "../hooks/useTheme.jsx";
 
+/**
+ * Navigation bar component for the application
+ */
 const NavBar = () => {
   const dispatch = useDispatch();
   const auth = useSelector(state => state.auth.authData);
-  const darkMode = useSelector(state => state.show.darkMode);
+
+  // Use theme hook for dark mode
+  const { darkMode, toggleDarkMode } = useTheme();
 
   // State for mobile menu
   const [showOffcanvas, setShowOffcanvas] = useState(false);
@@ -19,10 +24,6 @@ const NavBar = () => {
     dispatch(logout())
     toast.success("Logout Success")
     handleCloseOffcanvas()
-  }
-
-  const handleToggleDarkMode = () => {
-    dispatch(toggleDarkMode());
   }
 
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
@@ -37,14 +38,6 @@ const NavBar = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add('dark-mode');
-    } else {
-      document.body.classList.remove('dark-mode');
-    }
-  }, [darkMode]);
 
   return (
     <Navbar className="bg-gradient shadow-sm" style={{ background: 'linear-gradient(135deg, #e53935 0%, #e35d5b 100%)' }} expand="lg" variant="dark" sticky="top">
@@ -92,7 +85,7 @@ const NavBar = () => {
                   )}
 
                   <Button
-                    onClick={handleToggleDarkMode}
+                    onClick={toggleDarkMode}
                     variant={darkMode ? "light" : "dark"}
                     className="rounded-pill w-100 fw-medium py-2 d-flex align-items-center justify-content-center"
                   >
@@ -128,7 +121,7 @@ const NavBar = () => {
             <Nav className="align-items-center">
               <Nav.Item className="my-1 my-lg-0 me-lg-3">
                 <Button
-                  onClick={handleToggleDarkMode}
+                  onClick={toggleDarkMode}
                   variant="outline-light"
                   size="sm"
                   className="rounded-pill px-3 fw-medium border-0"

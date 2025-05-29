@@ -1,21 +1,29 @@
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/actions/authActions";
 import { IsAuth } from "../hoc/checkAuth";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
-import axiosInstance from "../lib/axios";
-import { setBug } from "../store/actions/bugActions";
 import CardBug from "../components/cards/CardBug";
 import Loader from "../components/Loader";
 import EmptyState from "../components/EmptyState";
-import { hideModalBugdetail, hideModalCreate, showModalBugdetail, showModalCreate } from "../store/actions/showAction";
+import {
+  hideModalBugdetail,
+  hideModalCreate,
+  showModalBugdetail,
+  showModalCreate
+} from "../store/actions/showAction";
 import { Modal, Button, Pagination } from "react-bootstrap";
 import ModalCreate from "../components/modals/ModalCreate";
 import { toast } from "sonner";
 import showConfirmAlert from "../lib/confirmALert";
 import { ModalBug } from "../components/modals/ModalBug";
 import NavBar from "../components/NavBar";
+// Import custom hooks
+import { useBugOperations } from "../hooks/useBugOperations";
+import { useFilterAndPagination } from "../hooks/useFilterAndPagination";
+import { useDarkMode } from "../hooks/uiHooks";
+import { FILTER_OPTIONS, ITEMS_PER_PAGE } from "../constants";
 
 const DashboardPage = () => {
   const globalState = useSelector((state) => state);
@@ -25,15 +33,6 @@ const DashboardPage = () => {
 
   const [bugDetail, setBugDetail] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Filter states
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [priorityFilter, setPriorityFilter] = useState("all");
-  const [searchQuery, setSearchQuery] = useState("");
-
-  // Pagination states
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(6);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -46,49 +45,55 @@ const DashboardPage = () => {
 
   const token = dataAuth.authData?.token;
 
-  const getAllBug = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const result = await axiosInstance.get(`/bugs`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      dispatch(setBug(result.data));
-    } catch (error) {
-      console.log(error);
-      toast.error("server error");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [token, dispatch]);
+  // Use dark mode hook
+  const { darkMode } = useDarkMode();
 
+  // Use bug operations hook
+  const { getAllBugs, getBugDetails, changeStatus: changeBugStatus } = useBugOperations(token, setIsLoading);
+
+  // Use filter and pagination hook
+  const {
+    statusFilter,
+    setStatusFilter,
+    priorityFilter,
+    setPriorityFilter,
+    searchQuery,
+    setSearchQuery,
+    clearFilters,
+    isFilterActive,
+    currentPage,
+    handlePageChange,
+    totalPages,
+    currentItems: currentBugs,
+    totalFilteredItems
+  } = useFilterAndPagination(dataBug, ITEMS_PER_PAGE);
 
   const handleShowBugModal = async (id) => {
     try {
-      const result = await axiosInstance.get(`/bugs/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      setBugDetail(result.data)
-      dispatch(showModalBugdetail());
+      const bugData = await getBugDetails(id);
+      if (bugData) {
+        setBugDetail(bugData);
+        dispatch(showModalBugdetail());
+      }
     } catch (error) {
-      console.log(error.message)
-      toast.error("server error");
+      console.error("Error showing bug details:", error);
+      toast.error("Server error saat mengambil detail bug");
     }
   };
+
   const handleCloseBugModal = () => {
-    dispatch(hideModalBugdetail())
-    setBugDetail(null)
+    dispatch(hideModalBugdetail());
+    setBugDetail(null);
   };
+
   const handleClose = () => {
-    dispatch(hideModalCreate())
+    dispatch(hideModalCreate());
   };
+
   const handleShow = () => dispatch(showModalCreate());
 
   const handleLogout = () => {
-    toast.success("logout succes");
+    toast.success("Logout berhasil");
     setTimeout(() => {
       dispatch(logout());
       navigate("/login");
@@ -105,25 +110,9 @@ const DashboardPage = () => {
   };
 
   const changeStatus = async (id) => {
-    try {
-      const result = await axiosInstance.put(
-        `/bugs/status/${id}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (result.status === 200) {
-        getAllBug();
-        toast.success("Bug telah ditandai sebagai solved");
-        handleCloseBugModal();
-      }
-      console.log(result);
-    } catch (error) {
-      console.log(error.response);
-      toast.error("server error");
+    const success = await changeBugStatus(id);
+    if (success) {
+      handleCloseBugModal();
     }
   };
 
@@ -136,69 +125,22 @@ const DashboardPage = () => {
     );
   };
 
-  // Filter and pagination logic
-  const filteredBugs = useMemo(() => {
-    let filtered = [...dataBug];
-
-    // Filter by status
-    if (statusFilter !== "all") {
-      const isSolved = statusFilter === "solved";
-      filtered = filtered.filter(bug => bug.is_solved === isSolved);
-    }
-
-    // Filter by priority level
-    if (priorityFilter !== "all") {
-      filtered = filtered.filter(bug =>
-        bug.PriorityLevel?.name?.toLowerCase() === priorityFilter.toLowerCase()
-      );
-    }
-
-    // Filter by search query
-    if (searchQuery.trim() !== "") {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(bug =>
-        bug.title.toLowerCase().includes(query) ||
-        bug.actual_result.toLowerCase().includes(query) ||
-        bug.expected_result.toLowerCase().includes(query) ||
-        bug.User?.name.toLowerCase().includes(query)
-      );
-    }
-
-    return filtered;
-  }, [dataBug, statusFilter, priorityFilter, searchQuery]);
-
-  // Get current bugs for pagination
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentBugs = filteredBugs.slice(indexOfFirstItem, indexOfLastItem);
-
-  // Change page
-  const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
-
-  // Calculate total pages
-  const totalPages = Math.ceil(filteredBugs.length / itemsPerPage);
-
-  // Reset to page 1 when filters change
   useEffect(() => {
-    setCurrentPage(1);
-  }, [statusFilter, priorityFilter, searchQuery]);
-
-  useEffect(() => {
-    getAllBug();
-  }, [getAllBug]);
+    getAllBugs();
+  }, [getAllBugs]);
 
   return (
-    <div className="bg-dark min-vh-100">
+    <div className={`min-vh-100 ${darkMode ? 'bg-dark' : 'bg-light'}`}>
       <NavBar />
       <div className="container py-4">
         {/* Header Section */}
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
           <div>
-            <h1 className="fw-bold text-light mb-2">
+            <h1 className={`fw-bold ${darkMode ? 'text-light' : 'text-dark'} mb-2`}>
               <i className="bi bi-grid-1x2-fill me-2"></i>
               Dashboard
             </h1>
-            <p className="text-light opacity-75 mb-3">
+            <p className={`${darkMode ? 'text-light' : 'text-dark'} opacity-75 mb-3`}>
               {matchDev
                 ? "Monitor and manage reported bugs"
                 : "Track and submit bugs for your projects"}
@@ -217,7 +159,7 @@ const DashboardPage = () => {
               </Button>
             )}
             <Button
-              variant="outline-light"
+              variant={darkMode ? "outline-light" : "outline-dark"}
               className="rounded-pill fw-medium border-0"
               onClick={confirmLogout}
             >
@@ -274,10 +216,10 @@ const DashboardPage = () => {
         </div>
 
         {/* Filters Section */}
-        <div className="bg-dark bg-opacity-25 p-3 rounded-4 mb-4">
+        <div className={`${darkMode ? 'bg-dark bg-opacity-25' : 'bg-light bg-opacity-75'} p-3 rounded-4 mb-4 shadow-sm`}>
           <div className="row g-2 align-items-center">
             <div className="col-12 col-md-auto">
-              <label className="text-light mb-0 me-2">Filter by:</label>
+              <label className={`${darkMode ? 'text-light' : 'text-dark'} mb-0 me-2`}>Filter by:</label>
             </div>
             <div className="col-6 col-md-auto">
               <select
@@ -285,9 +227,9 @@ const DashboardPage = () => {
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
               >
-                <option value="all">All Statuses</option>
-                <option value="solved">Solved</option>
-                <option value="unsolved">Unsolved</option>
+                <option value={FILTER_OPTIONS.ALL}>All Statuses</option>
+                <option value={FILTER_OPTIONS.SOLVED}>Solved</option>
+                <option value={FILTER_OPTIONS.UNSOLVED}>Unsolved</option>
               </select>
             </div>
             <div className="col-6 col-md-auto">
@@ -296,7 +238,7 @@ const DashboardPage = () => {
                 value={priorityFilter}
                 onChange={(e) => setPriorityFilter(e.target.value)}
               >
-                <option value="all">All Priorities</option>
+                <option value={FILTER_OPTIONS.ALL}>All Priorities</option>
                 <option value="high">High</option>
                 <option value="medium">Medium</option>
                 <option value="low">Low</option>
@@ -304,7 +246,7 @@ const DashboardPage = () => {
             </div>
             <div className="col-md ms-md-auto text-md-end">
               <div className="input-group input-group-sm">
-                <span className="input-group-text bg-transparent border-end-0 text-light">
+                <span className={`input-group-text bg-transparent border-end-0 ${darkMode ? 'text-light' : 'text-dark'}`}>
                   <i className="bi bi-search"></i>
                 </span>
                 <input
@@ -320,19 +262,15 @@ const DashboardPage = () => {
         </div>
 
         {/* Show filter results summary if filtering is active */}
-        {(statusFilter !== "all" || priorityFilter !== "all" || searchQuery.trim() !== "") && (
-          <div className="mb-3 bg-dark bg-opacity-50 p-2 px-3 rounded-pill d-inline-flex align-items-center">
-            <span className="text-light">
+        {isFilterActive && (
+          <div className={`mb-3 ${darkMode ? 'bg-dark bg-opacity-50' : 'bg-light bg-opacity-75'} p-2 px-3 rounded-pill d-inline-flex align-items-center shadow-sm`}>
+            <span className={darkMode ? 'text-light' : 'text-dark'}>
               <i className="bi bi-funnel-fill me-2 text-primary"></i>
-              Showing {filteredBugs.length} results
+              Showing {totalFilteredItems} results
             </span>
             <button
-              className="btn btn-sm text-light ms-3"
-              onClick={() => {
-                setStatusFilter("all");
-                setPriorityFilter("all");
-                setSearchQuery("");
-              }}
+              className={`btn btn-sm ${darkMode ? 'text-light' : 'text-dark'} ms-3`}
+              onClick={clearFilters}
             >
               <i className="bi bi-x-circle"></i> Clear filters
             </button>
@@ -341,7 +279,7 @@ const DashboardPage = () => {
 
         {/* Modal create bug */}
         <Modal show={modalCreate} onHide={handleClose} size="lg">
-          <ModalCreate handleFetchData={getAllBug} />
+          <ModalCreate handleFetchData={getAllBugs} />
         </Modal>
 
         {/* Modal view bug */}
@@ -374,20 +312,20 @@ const DashboardPage = () => {
         <div className="mb-4">
           {isLoading ? (
             <Loader />
-          ) : filteredBugs.length === 0 ? (
+          ) : currentBugs.length === 0 ? (
             <div className="text-center py-5">
               <EmptyState
                 icon="bi-bug-fill"
-                title={searchQuery || statusFilter !== "all" || priorityFilter !== "all"
+                title={isFilterActive
                   ? "Tidak ada bug yang sesuai dengan filter"
                   : "Belum ada bug ditemukan"}
-                description={searchQuery || statusFilter !== "all" || priorityFilter !== "all"
+                description={isFilterActive
                   ? "Coba ubah filter untuk melihat hasil yang berbeda"
                   : matchDev
                     ? "Belum ada bug yang dilaporkan untuk saat ini."
                     : "Mulai dengan membuat laporan bug pertama Anda."
                 }
-                textColor="text-light"
+                textColor={darkMode ? "text-light" : "text-dark"}
               />
             </div>
           ) : (

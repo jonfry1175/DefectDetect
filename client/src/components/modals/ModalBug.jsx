@@ -1,23 +1,26 @@
-import { Button, Badge, Modal, ModalHeader, ModalTitle, Row, Col } from "react-bootstrap";
+import { Button, Modal, ModalHeader, ModalTitle, Row, Col } from "react-bootstrap";
 import PropTypes from 'prop-types';
+import BadgeStatus from '../cards/BadgeStatus';
 
+/**
+ * Modal component for detailed bug information display
+ * @param {Object} props - Component props
+ */
 export const ModalBug = (props) => {
-  // Determine badge colors for priority and severity
-  const getPriorityBadgeColor = () => {
-    const priority = props.priorityLevel?.toLowerCase();
-    if (priority === "high") return "danger";
-    if (priority === "medium") return "warning";
-    if (priority === "low") return "info";
-    return "secondary";
-  };
-
-  const getSeverityBadgeColor = () => {
-    const severity = props.severityLevel?.toLowerCase();
-    if (severity === "high") return "danger";
-    if (severity === "medium") return "warning";
-    if (severity === "low") return "info";
-    return "secondary";
-  };
+  const {
+    title,
+    image,
+    createdBy,
+    buildVersion,
+    expectedResult,
+    actualResult,
+    priorityLevel,
+    severityLevel,
+    status,
+    roleId,
+    onClick,
+    onClose
+  } = props;
 
   return (
     <>
@@ -25,24 +28,23 @@ export const ModalBug = (props) => {
         <div className="d-flex justify-content-between align-items-start w-100">
           <div>
             <h6 className="text-muted mb-1">Bug Report</h6>
-            <ModalTitle className="fw-bold">{props.title}</ModalTitle>
+            <ModalTitle className="fw-bold">{title}</ModalTitle>
           </div>
           <div>
-            <Badge
-              bg={props.status ? "success" : "danger"}
-              className="rounded-pill px-3 py-2"
-            >
-              {props.status ? "Solved" : "Unsolved"}
-            </Badge>
+            <BadgeStatus
+              type="status"
+              value={status}
+              className="py-2"
+            />
           </div>
         </div>
       </ModalHeader>
 
       <Modal.Body className="pt-2">
         <div className="bg-light rounded-4 p-1 mb-4">
-          {props.image && (
+          {image && (
             <img
-              src={props.image}
+              src={image}
               alt="Bug screenshot"
               className="img-fluid rounded-3 w-100"
               style={{ maxHeight: "300px", objectFit: "contain" }}
@@ -57,11 +59,11 @@ export const ModalBug = (props) => {
             </div>
             <div>
               <small className="text-muted">Reported by</small>
-              <p className="mb-0 fw-medium">{props.createdBy}</p>
+              <p className="mb-0 fw-medium">{createdBy}</p>
             </div>
             <div className="ms-auto">
               <small className="text-muted">Build Version</small>
-              <p className="mb-0 fw-medium">{props.buildVersion}</p>
+              <p className="mb-0 fw-medium">{buildVersion}</p>
             </div>
           </div>
         </div>
@@ -73,7 +75,7 @@ export const ModalBug = (props) => {
                 <i className="bi bi-check-circle me-2"></i>
                 Expected Result
               </h6>
-              <p className="text-muted">{props.expectedResult}</p>
+              <p className="text-muted">{expectedResult}</p>
             </div>
           </Col>
           <Col xs={12} lg={6}>
@@ -82,23 +84,27 @@ export const ModalBug = (props) => {
                 <i className="bi bi-exclamation-triangle me-2"></i>
                 Actual Result
               </h6>
-              <p className="text-muted">{props.actualResult}</p>
+              <p className="text-muted">{actualResult}</p>
             </div>
           </Col>
         </Row>
 
         <div className="d-flex gap-2 mb-3">
-          <Badge bg={getPriorityBadgeColor()} className="rounded-pill px-3 py-2">
-            <i className="bi bi-flag me-1"></i> Priority: {props.priorityLevel}
-          </Badge>
-          <Badge bg={getSeverityBadgeColor()} className="rounded-pill px-3 py-2">
-            <i className="bi bi-exclamation-circle me-1"></i> Severity: {props.severityLevel}
-          </Badge>
+          <BadgeStatus
+            type="priority"
+            value={priorityLevel}
+            className="py-2"
+          />
+          <BadgeStatus
+            type="severity"
+            value={severityLevel}
+            className="py-2"
+          />
         </div>
       </Modal.Body>
 
       <Modal.Footer className="border-0">
-        {props.status ? (
+        {status ? (
           <Button
             variant="success"
             className="rounded-pill px-4 py-2 fw-medium"
@@ -110,8 +116,8 @@ export const ModalBug = (props) => {
           <Button
             variant="danger"
             className="rounded-pill px-4 py-2 fw-medium"
-            disabled={props.roleId === +import.meta.env.VITE_QA_ROLE_ID}
-            onClick={props.onClick}
+            disabled={roleId === +import.meta.env.VITE_QA_ROLE_ID}
+            onClick={onClick}
           >
             <i className="bi bi-check-circle me-2"></i> Mark as Solved
           </Button>
@@ -119,7 +125,7 @@ export const ModalBug = (props) => {
         <Button
           variant="outline-secondary"
           className="rounded-pill px-4 py-2 fw-medium"
-          onClick={props.onClose}
+          onClick={onClose}
         >
           <i className="bi bi-x me-1"></i> Close
         </Button>
