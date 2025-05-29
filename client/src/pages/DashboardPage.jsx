@@ -178,7 +178,7 @@ const DashboardPage = () => {
                 </div>
                 <div>
                   <h3 className="mb-0 fw-bold text-primary">{dataBug.length}</h3>
-                  <p className="mb-0 text-muted">Total Bugs</p>
+                  <p className={`${darkMode ? 'text-light' : 'text-muted'}`}>Total Bugs</p>
                 </div>
               </div>
             </div>
@@ -193,7 +193,7 @@ const DashboardPage = () => {
                   <h3 className="mb-0 fw-bold text-danger">
                     {dataBug.filter(bug => !bug.is_solved).length}
                   </h3>
-                  <p className="mb-0 text-muted">Unsolved Bugs</p>
+                  <p id="22" className={`${darkMode ? 'text-light' : 'text-muted'} mb-0 `}>Unsolved Bugs</p>
                 </div>
               </div>
             </div>
@@ -208,7 +208,7 @@ const DashboardPage = () => {
                   <h3 className="mb-0 fw-bold text-success">
                     {dataBug.filter(bug => bug.is_solved).length}
                   </h3>
-                  <p className="mb-0 text-muted">Solved Bugs</p>
+                  <p className={`${darkMode ? 'text-light' : 'text-muted'}`}>Solved Bugs</p>
                 </div>
               </div>
             </div>
@@ -251,11 +251,9 @@ const DashboardPage = () => {
                 </span>
                 <input
                   type="text"
-                  className={`form-control bg-transparent border-start-0 ${darkMode ? 'text-light placeholder-light' : 'text-dark'}`}
+                  className={`form-control  border-start-0 ${darkMode ? 'text-light ' : 'text-dark bg-transparent'}`}
                   placeholder="Search bugs..."
                   value={searchQuery}
-                  // placeholder color
-                  style={{}}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
