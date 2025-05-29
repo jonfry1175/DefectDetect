@@ -63,7 +63,7 @@ class UserController {
             if (!match) {
                 return res.status(401).json({ message: 'Invalid password' });
             }
-            const token = tokenGenerator({ id: emailFound.id, email: emailFound.email, role_id: emailFound.role_id });
+            const token = tokenGenerator({ id: emailFound.id, email: emailFound.email, role_id: emailFound.role_id, name: emailFound.name });
 
             res.status(200).json(token);
         } catch (error) {

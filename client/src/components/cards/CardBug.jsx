@@ -2,6 +2,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import PropTypes from 'prop-types';
 import BadgeStatus from './BadgeStatus';
+import { useTheme } from '../../hooks/useTheme.jsx';
 
 /**
  * Card component for displaying bug information
@@ -20,8 +21,11 @@ function CardBug(props) {
     onClickView
   } = props;
 
+  // Use theme hook for dark mode
+  const { darkMode } = useTheme();
+
   return (
-    <Card className="h-100 shadow-sm hover-shadow rounded-lg mb-4 border-0 overflow-hidden transition-all"
+    <Card className={`h-100 shadow-sm hover-shadow rounded-lg mb-4 border-0 overflow-hidden transition-all ${darkMode ? 'bg-dark text-light' : 'bg-white'}`}
       style={{ transition: "all 0.3s ease" }}>
       <div className="position-relative">
         {image && (
@@ -44,14 +48,14 @@ function CardBug(props) {
 
       <Card.Body className="d-flex flex-column">
         <div className="d-flex justify-content-between align-items-start mb-2">
-          <Card.Title className="mb-0 text-truncate fw-bold">{title}</Card.Title>
+          <Card.Title className={`mb-0 text-truncate fw-bold ${darkMode ? 'text-light' : 'text-dark'}`}>{title}</Card.Title>
         </div>
 
         <div className="mb-3 d-flex align-items-center">
-          <div className="bg-light rounded-circle overflow-hidden me-2" style={{ width: "24px", height: "24px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <i className="bi bi-person-fill text-secondary"></i>
+          <div className={`${darkMode ? 'bg-secondary' : 'bg-light'} rounded-circle overflow-hidden me-2`} style={{ width: "24px", height: "24px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <i className={`bi bi-person-fill ${darkMode ? 'text-dark' : 'text-secondary'}`}></i>
           </div>
-          <small className="text-muted">{createdBy || "Unknown"}</small>
+          <small className="text-muted-adaptive">{createdBy || "Unknown"}</small>
         </div>
 
         <div className="d-flex flex-wrap gap-2 mb-3">
@@ -61,12 +65,12 @@ function CardBug(props) {
 
         <div className="d-flex gap-2 mt-auto pt-2">
           {status ? (
-            <Button variant="outline-success" size="sm" disabled className="rounded-pill flex-grow-1">
+            <Button variant={darkMode ? "outline-success" : "outline-success"} size="sm" disabled className="rounded-pill flex-grow-1">
               <i className="bi bi-check-circle me-1"></i> Solved
             </Button>
           ) : (
             <Button
-              variant="outline-danger"
+              variant={darkMode ? "outline-danger" : "outline-danger"}
               size="sm"
               className="rounded-pill flex-grow-1"
               disabled={roleId === +import.meta.env.VITE_QA_ROLE_ID}

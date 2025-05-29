@@ -1,34 +1,36 @@
 import { Button, Modal, ModalHeader, ModalTitle, Row, Col } from "react-bootstrap";
 import PropTypes from 'prop-types';
 import BadgeStatus from '../cards/BadgeStatus';
+import { useTheme } from '../../hooks/useTheme.jsx';
 
 /**
  * Modal component for detailed bug information display
  * @param {Object} props - Component props
  */
-export const ModalBug = (props) => {
-  const {
-    title,
-    image,
-    createdBy,
-    buildVersion,
-    expectedResult,
-    actualResult,
-    priorityLevel,
-    severityLevel,
-    status,
-    roleId,
-    onClick,
-    onClose
-  } = props;
+export const ModalBug = ({
+  title,
+  image = '',
+  createdBy = 'Unknown',
+  buildVersion = 'N/A',
+  expectedResult = 'N/A',
+  actualResult = 'N/A',
+  priorityLevel = 'N/A',
+  severityLevel = 'N/A',
+  status,
+  roleId,
+  onClick,
+  onClose
+}) => {
+  // Use theme hook for dark mode
+  const { darkMode } = useTheme();
 
   return (
     <>
-      <ModalHeader closeButton className="border-0 pb-0">
+      <ModalHeader closeButton className={`border-0 pb-0 ${darkMode ? 'text-light' : ''}`}>
         <div className="d-flex justify-content-between align-items-start w-100">
           <div>
-            <h6 className="text-muted mb-1">Bug Report</h6>
-            <ModalTitle className="fw-bold">{title}</ModalTitle>
+            <h6 className="text-muted-adaptive mb-1">Bug Report</h6>
+            <ModalTitle className={`fw-bold ${darkMode ? 'text-light' : ''}`}>{title}</ModalTitle>
           </div>
           <div>
             <BadgeStatus
@@ -40,8 +42,8 @@ export const ModalBug = (props) => {
         </div>
       </ModalHeader>
 
-      <Modal.Body className="pt-2">
-        <div className="bg-light rounded-4 p-1 mb-4">
+      <Modal.Body className={`pt-2 ${darkMode ? 'text-light' : ''}`}>
+        <div className={`${darkMode ? 'bg-secondary bg-opacity-10' : 'bg-light'} rounded-4 p-1 mb-4`}>
           {image && (
             <img
               src={image}
@@ -54,15 +56,15 @@ export const ModalBug = (props) => {
 
         <div className="mb-4">
           <div className="d-flex align-items-center mb-3">
-            <div className="bg-light rounded-circle overflow-hidden me-2" style={{ width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <i className="bi bi-person-fill text-dark"></i>
+            <div className={`${darkMode ? 'bg-secondary' : 'bg-light'} rounded-circle overflow-hidden me-2`} style={{ width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <i className={`bi bi-person-fill ${darkMode ? 'text-light' : 'text-dark'}`}></i>
             </div>
             <div>
-              <small className="text-muted">Reported by</small>
+              <small className="text-muted-adaptive">Reported by</small>
               <p className="mb-0 fw-medium">{createdBy}</p>
             </div>
             <div className="ms-auto">
-              <small className="text-muted">Build Version</small>
+              <small className="text-muted-adaptive">Build Version</small>
               <p className="mb-0 fw-medium">{buildVersion}</p>
             </div>
           </div>
@@ -70,21 +72,21 @@ export const ModalBug = (props) => {
 
         <Row className="mb-4 g-3">
           <Col xs={12} lg={6}>
-            <div className="border rounded-3 p-3 h-100">
+            <div className={`border rounded-3 p-3 h-100 ${darkMode ? 'border-secondary bg-dark bg-opacity-50' : ''}`}>
               <h6 className="text-primary mb-3">
                 <i className="bi bi-check-circle me-2"></i>
                 Expected Result
               </h6>
-              <p className="text-muted">{expectedResult}</p>
+              <p className="text-muted-adaptive">{expectedResult}</p>
             </div>
           </Col>
           <Col xs={12} lg={6}>
-            <div className="border rounded-3 p-3 h-100">
+            <div className={`border rounded-3 p-3 h-100 ${darkMode ? 'border-secondary bg-dark bg-opacity-50' : ''}`}>
               <h6 className="text-danger mb-3">
                 <i className="bi bi-exclamation-triangle me-2"></i>
                 Actual Result
               </h6>
-              <p className="text-muted">{actualResult}</p>
+              <p className="text-muted-adaptive">{actualResult}</p>
             </div>
           </Col>
         </Row>
@@ -103,7 +105,7 @@ export const ModalBug = (props) => {
         </div>
       </Modal.Body>
 
-      <Modal.Footer className="border-0">
+      <Modal.Footer className={`border-0 ${darkMode ? 'border-dark' : ''}`}>
         {status ? (
           <Button
             variant="success"
@@ -123,7 +125,7 @@ export const ModalBug = (props) => {
           </Button>
         )}
         <Button
-          variant="outline-secondary"
+          variant={darkMode ? "outline-light" : "outline-secondary"}
           className="rounded-pill px-4 py-2 fw-medium"
           onClick={onClose}
         >
@@ -147,14 +149,4 @@ ModalBug.propTypes = {
   roleId: PropTypes.number.isRequired,
   onClick: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired
-};
-
-ModalBug.defaultProps = {
-  image: '',
-  createdBy: 'Unknown',
-  expectedResult: 'N/A',
-  actualResult: 'N/A',
-  buildVersion: 'N/A',
-  priorityLevel: 'N/A',
-  severityLevel: 'N/A'
 };

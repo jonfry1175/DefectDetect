@@ -43,15 +43,15 @@ const NavBar = () => {
     <Navbar className="bg-gradient shadow-sm" style={{ background: 'linear-gradient(135deg, #e53935 0%, #e35d5b 100%)' }} expand="lg" variant="dark" sticky="top">
       <Container>
         <Navbar.Brand href="#home" className="fw-bold d-flex align-items-center">
-          <i className="bi bi-bug-fill me-2"></i>
-          <span>DefectDetect</span>
+          <i className={`${darkMode ? "text-light" : "text-dark"} bi bi-bug-fill me-2`}></i>
+          <span className={`${darkMode ? "text-light" : "text-dark"}`}>DefectDetect</span>
           <Badge bg="light" text="dark" pill className="ms-2" style={{ fontSize: '0.6rem' }}>BETA</Badge>
         </Navbar.Brand>
 
         {isMobile ? (
           <>
             <Button
-              variant="outline-light"
+              variant={`${darkMode ? "outline-light" : "outline-dark"}`}
               className="border-0 p-1"
               onClick={handleShowOffcanvas}
             >
@@ -79,7 +79,7 @@ const NavBar = () => {
                       </div>
                       <div>
                         <h6 className="mb-0 fw-bold">{auth.name || "User"}</h6>
-                        <small className={darkMode ? "text-light opacity-75" : "text-muted"}>Logged in</small>
+                        <small className="text-muted-adaptive">Logged in</small>
                       </div>
                     </div>
                   )}
@@ -122,7 +122,7 @@ const NavBar = () => {
               <Nav.Item className="my-1 my-lg-0 me-lg-3">
                 <Button
                   onClick={toggleDarkMode}
-                  variant="outline-light"
+                  variant={darkMode ? 'outline-light' : 'outline-dark'}
                   size="sm"
                   className="rounded-pill px-3 fw-medium border-0"
                 >
@@ -141,7 +141,7 @@ const NavBar = () => {
                       <div className="bg-light rounded-circle overflow-hidden me-2" style={{ width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center" }}>
                         <i className="bi bi-person-fill text-dark"></i>
                       </div>
-                      <Navbar.Text className="text-light">
+                      <Navbar.Text className={darkMode ? "text-light" : "text-dark"}>
                         <span className="d-none d-md-inline">Logged in as:</span> <span className="fw-bold">{auth.name || "User"}</span>
                       </Navbar.Text>
                     </div>

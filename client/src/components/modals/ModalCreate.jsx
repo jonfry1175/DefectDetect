@@ -12,12 +12,16 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addBug } from "../../store/actions/bugActions";
 import PropTypes from 'prop-types';
+import { useTheme } from '../../hooks/useTheme.jsx';
 
 function ModalCreate({ handleFetchData }) {
   const reduxData = useSelector((state) => state);
   const level = reduxData.level.level;
   const dataAuth = reduxData.auth.authData;
   const dispatch = useDispatch();
+
+  // Use theme hook for dark mode
+  const { darkMode } = useTheme();
 
   const validateForm = z.object({
     title: z.string().min(1),
@@ -102,20 +106,20 @@ function ModalCreate({ handleFetchData }) {
 
   return (
     <>
-      <Modal.Header closeButton className="border-0 pb-0">
+      <Modal.Header closeButton className={`border-0 pb-0 ${darkMode ? 'text-light' : ''}`}>
         <div className="w-100">
-          <h6 className="text-muted mb-1">New Issue</h6>
-          <Modal.Title className="fw-bold">Report a Bug</Modal.Title>
+          <h6 className={darkMode ? "text-light opacity-75 mb-1" : "text-muted mb-1"}>New Issue</h6>
+          <Modal.Title className={`fw-bold ${darkMode ? 'text-light' : ''}`}>Report a Bug</Modal.Title>
         </div>
       </Modal.Header>
       <form onSubmit={form.handleSubmit(handleCreate)}>
-        <Modal.Body className="p-4">
-          <div className="bg-light p-3 rounded-4 mb-4 border">
+        <Modal.Body className={`p-4 ${darkMode ? 'text-light' : ''}`}>
+          <div className={`${darkMode ? 'bg-dark bg-opacity-50 border-secondary' : 'bg-light'} p-3 rounded-4 mb-4 border`}>
             <div className="d-flex align-items-center mb-2">
               <i className="bi bi-info-circle text-primary me-2"></i>
               <h6 className="mb-0 fw-medium">Information</h6>
             </div>
-            <p className="text-muted small mb-0">
+            <p className={darkMode ? "text-light opacity-75 small mb-0" : "text-muted small mb-0"}>
               Please provide as much detail as possible to help developers understand and fix the issue.
             </p>
           </div>
@@ -126,7 +130,7 @@ function ModalCreate({ handleFetchData }) {
               render={({ field, fieldState }) => {
                 return (
                   <Form.Group className="col-12">
-                    <Form.Label className="fw-medium">
+                    <Form.Label className={`fw-medium ${darkMode ? 'text-light' : ''}`}>
                       <i className="bi bi-chat-square-text me-2 text-primary"></i>
                       Bug Title
                     </Form.Label>
@@ -136,7 +140,7 @@ function ModalCreate({ handleFetchData }) {
                       placeholder="Enter a descriptive title"
                       autoFocus
                       isInvalid={!!fieldState.error}
-                      className="rounded-3 border-secondary-subtle"
+                      className={`rounded-3 ${darkMode ? 'bg-dark border-secondary text-light' : 'border-secondary-subtle'}`}
                     />
                     <Form.Control.Feedback type="invalid">
                       {fieldState.error?.message}
@@ -150,17 +154,17 @@ function ModalCreate({ handleFetchData }) {
               control={form.control}
               render={({ field, fieldState }) => {
                 return (
-                  <Form.Group className="col-md-4">
-                    <Form.Label className="fw-medium">
-                      <i className="bi bi-tags me-2 text-primary"></i>
+                  <Form.Group className="col-12 col-md-6">
+                    <Form.Label className={`fw-medium ${darkMode ? 'text-light' : ''}`}>
+                      <i className="bi bi-tag me-2 text-primary"></i>
                       Build Version
                     </Form.Label>
                     <Form.Control
                       {...field}
                       type="text"
-                      placeholder="e.g., v1.0.0"
+                      placeholder="e.g., v1.2.3"
                       isInvalid={!!fieldState.error}
-                      className="rounded-3 border-secondary-subtle"
+                      className={`rounded-3 ${darkMode ? 'bg-dark border-secondary text-light' : 'border-secondary-subtle'}`}
                     />
                     <Form.Control.Feedback type="invalid">
                       {fieldState.error?.message}
@@ -169,26 +173,24 @@ function ModalCreate({ handleFetchData }) {
                 );
               }}
             />
+
             <Controller
               name="image"
               control={form.control}
               render={({ field, fieldState }) => {
                 return (
-                  <Form.Group className="col-md-8">
-                    <Form.Label className="fw-medium">
+                  <Form.Group className="col-12 col-md-6">
+                    <Form.Label className={`fw-medium ${darkMode ? 'text-light' : ''}`}>
                       <i className="bi bi-image me-2 text-primary"></i>
-                      Image Link
+                      Screenshot URL
                     </Form.Label>
                     <Form.Control
                       {...field}
                       type="text"
-                      placeholder="URL to screenshot or image"
+                      placeholder="Link to screenshot or image"
                       isInvalid={!!fieldState.error}
-                      className="rounded-3 border-secondary-subtle"
+                      className={`rounded-3 ${darkMode ? 'bg-dark border-secondary text-light' : 'border-secondary-subtle'}`}
                     />
-                    <Form.Text className="text-muted">
-                      Add a screenshot to help illustrate the issue
-                    </Form.Text>
                     <Form.Control.Feedback type="invalid">
                       {fieldState.error?.message}
                     </Form.Control.Feedback>
@@ -201,9 +203,9 @@ function ModalCreate({ handleFetchData }) {
               control={form.control}
               render={({ field, fieldState }) => {
                 return (
-                  <Form.Group className="col-md-6">
-                    <Form.Label className="fw-medium">
-                      <i className="bi bi-check-circle me-2 text-success"></i>
+                  <Form.Group className="col-12 col-md-6">
+                    <Form.Label className={`fw-medium ${darkMode ? 'text-light' : ''}`}>
+                      <i className="bi bi-check-circle me-2 text-primary"></i>
                       Expected Result
                     </Form.Label>
                     <Form.Control
@@ -212,7 +214,7 @@ function ModalCreate({ handleFetchData }) {
                       rows={3}
                       placeholder="What should happen"
                       isInvalid={!!fieldState.error}
-                      className="rounded-3 border-secondary-subtle"
+                      className={`rounded-3 ${darkMode ? 'bg-dark border-secondary text-light' : 'border-secondary-subtle'}`}
                     />
                     <Form.Control.Feedback type="invalid">
                       {fieldState.error?.message}
@@ -221,13 +223,14 @@ function ModalCreate({ handleFetchData }) {
                 );
               }}
             />
+
             <Controller
               name="actual_result"
               control={form.control}
               render={({ field, fieldState }) => {
                 return (
-                  <Form.Group className="col-md-6">
-                    <Form.Label className="fw-medium">
+                  <Form.Group className="col-12 col-md-6">
+                    <Form.Label className={`fw-medium ${darkMode ? 'text-light' : ''}`}>
                       <i className="bi bi-exclamation-triangle me-2 text-danger"></i>
                       Actual Result
                     </Form.Label>
@@ -237,7 +240,7 @@ function ModalCreate({ handleFetchData }) {
                       rows={3}
                       placeholder="What actually happens"
                       isInvalid={!!fieldState.error}
-                      className="rounded-3 border-secondary-subtle"
+                      className={`rounded-3 ${darkMode ? 'bg-dark border-secondary text-light' : 'border-secondary-subtle'}`}
                     />
                     <Form.Control.Feedback type="invalid">
                       {fieldState.error?.message}
@@ -252,29 +255,26 @@ function ModalCreate({ handleFetchData }) {
               control={form.control}
               render={({ field, fieldState }) => {
                 return (
-                  <Form.Group className="col-md-6">
-                    <Form.Label className="fw-medium">
-                      <i className="bi bi-exclamation-circle me-2 text-warning"></i>
+                  <Form.Group className="col-12 col-md-6">
+                    <Form.Label className={`fw-medium ${darkMode ? 'text-light' : ''}`}>
+                      <i className="bi bi-thermometer-half me-2 text-primary"></i>
                       Severity Level
                     </Form.Label>
                     <Form.Select
                       {...field}
+                      onChange={(e) => field.onChange(+e.target.value)}
                       isInvalid={!!fieldState.error}
-                      onChange={(e) => {
-                        field.onChange(parseInt(e.target.value))
-                      }}
-                      className="rounded-3 border-secondary-subtle"
+                      className={`rounded-3 ${darkMode ? 'bg-dark border-secondary text-light' : 'border-secondary-subtle'}`}
                     >
-                      <option value={0} disabled>Select Severity Level</option>
-                      {level.map((level) => (
-                        <option key={level.id} value={level.id}>
-                          {level.name}
-                        </option>
-                      ))}
+                      <option value={0}>Select severity</option>
+                      {level
+                        ?.filter((e) => e.type === "severity")
+                        .map((e) => (
+                          <option key={e.id} value={e.id}>
+                            {e.name}
+                          </option>
+                        ))}
                     </Form.Select>
-                    <Form.Text className="text-muted">
-                      How severely does this bug impact functionality
-                    </Form.Text>
                     <Form.Control.Feedback type="invalid">
                       {fieldState.error?.message}
                     </Form.Control.Feedback>
@@ -282,34 +282,32 @@ function ModalCreate({ handleFetchData }) {
                 );
               }}
             />
+
             <Controller
               name="priority_level_id"
               control={form.control}
               render={({ field, fieldState }) => {
                 return (
-                  <Form.Group className="col-md-6">
-                    <Form.Label className="fw-medium">
-                      <i className="bi bi-flag me-2 text-danger"></i>
+                  <Form.Group className="col-12 col-md-6">
+                    <Form.Label className={`fw-medium ${darkMode ? 'text-light' : ''}`}>
+                      <i className="bi bi-flag me-2 text-primary"></i>
                       Priority Level
                     </Form.Label>
                     <Form.Select
                       {...field}
+                      onChange={(e) => field.onChange(+e.target.value)}
                       isInvalid={!!fieldState.error}
-                      onChange={(e) => {
-                        field.onChange(parseInt(e.target.value))
-                      }}
-                      className="rounded-3 border-secondary-subtle"
+                      className={`rounded-3 ${darkMode ? 'bg-dark border-secondary text-light' : 'border-secondary-subtle'}`}
                     >
-                      <option value={0} disabled>Select Priority Level</option>
-                      {level.map((level) => (
-                        <option key={level.id} value={level.id}>
-                          {level.name}
-                        </option>
-                      ))}
+                      <option value={0}>Select priority</option>
+                      {level
+                        ?.filter((e) => e.type === "priority")
+                        .map((e) => (
+                          <option key={e.id} value={e.id}>
+                            {e.name}
+                          </option>
+                        ))}
                     </Form.Select>
-                    <Form.Text className="text-muted">
-                      How urgent it is to fix this bug
-                    </Form.Text>
                     <Form.Control.Feedback type="invalid">
                       {fieldState.error?.message}
                     </Form.Control.Feedback>
@@ -319,19 +317,11 @@ function ModalCreate({ handleFetchData }) {
             />
           </Form>
         </Modal.Body>
-        <Modal.Footer className="border-0">
-          <Button
-            variant="outline-secondary"
-            onClick={handleClose}
-            className="rounded-pill px-4 py-2"
-          >
-            <i className="bi bi-x me-1"></i> Cancel
+        <Modal.Footer className={`border-0 pt-0 ${darkMode ? 'text-light' : ''}`}>
+          <Button variant="light" onClick={handleClose} className={darkMode ? 'bg-secondary border-0 text-light' : ''}>
+            Cancel
           </Button>
-          <Button
-            variant="primary"
-            type="submit"
-            className="rounded-pill px-4 py-2 fw-medium"
-          >
+          <Button variant="primary" type="submit" className="fw-medium">
             <i className="bi bi-plus-circle me-1"></i> Submit Bug Report
           </Button>
         </Modal.Footer>

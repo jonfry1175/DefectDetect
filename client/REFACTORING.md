@@ -113,6 +113,32 @@ return (
 );
 ```
 
+### Text Coloring in Dark Mode
+
+For consistent text coloring in both light and dark modes, a standardized approach has been implemented using CSS classes:
+
+```jsx
+// Using the text-muted-adaptive class for consistent muted text appearance
+<small className="text-muted-adaptive">Created on May 15, 2024</small>
+
+// Previous approach with conditional classes (now replaced)
+// <small className={darkMode ? "text-light opacity-75" : "text-muted"}>Created on May 15, 2024</small>
+```
+
+CSS implementation:
+
+```css
+/* Class for adaptive muted text based on theme */
+.text-muted-adaptive {
+  color: var(--text-muted-light) !important;
+  transition: color 0.3s ease;
+}
+
+body.dark-theme .text-muted-adaptive {
+  color: var(--text-muted-dark) !important;
+}
+```
+
 ### Bug Operations
 
 ```jsx

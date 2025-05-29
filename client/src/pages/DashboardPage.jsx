@@ -251,9 +251,11 @@ const DashboardPage = () => {
                 </span>
                 <input
                   type="text"
-                  className="form-control bg-transparent border-start-0"
+                  className={`form-control bg-transparent border-start-0 ${darkMode ? 'text-light placeholder-light' : 'text-dark'}`}
                   placeholder="Search bugs..."
                   value={searchQuery}
+                  // placeholder color
+                  style={{}}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>

@@ -9,6 +9,18 @@
   --card-bg-dark: #1e1e1e;
   --border-light: rgba(0, 0, 0, 0.125);
   --border-dark: rgba(255, 255, 255, 0.125);
+  --text-muted-dark: rgba(255, 255, 255, 0.75);
+  --text-muted-light: rgba(33, 37, 41, 0.75);
+}
+
+/* Class utama untuk teks muted yang adaptif berdasarkan mode */
+.text-muted-adaptive {
+  color: var(--text-muted-light) !important;
+  transition: color 0.3s ease;
+}
+
+body.dark-theme .text-muted-adaptive {
+  color: var(--text-muted-dark) !important;
 }
 
 body {
@@ -17,49 +29,79 @@ body {
 }
 
 /* Dark Mode Styles */
-body.dark-mode {
+body.dark-theme {
   background-color: var(--bg-dark);
   color: var(--text-light);
 }
 
-body.dark-mode .card {
+body.dark-theme .card {
   background-color: var(--card-bg-dark);
   border-color: var(--border-dark);
   color: var(--text-light);
 }
 
-body.dark-mode .form-control,
-body.dark-mode .form-select {
+body.dark-theme .form-control,
+body.dark-theme .form-select {
   background-color: #2d2d2d;
   border-color: rgba(255, 255, 255, 0.2);
   color: var(--text-light);
 }
 
-body.dark-mode .modal-content {
+body.dark-theme .modal-content {
   background-color: #1e1e1e;
   color: var(--text-light);
 }
 
-body.dark-mode .modal-header,
-body.dark-mode .modal-footer {
+body.dark-theme .modal-header,
+body.dark-theme .modal-footer {
   border-color: rgba(255, 255, 255, 0.125);
 }
 
-body.dark-mode .dropdown-menu {
+body.dark-theme .dropdown-menu {
   background-color: #2d2d2d;
   border-color: rgba(255, 255, 255, 0.2);
 }
 
-body.dark-mode .dropdown-item {
+body.dark-theme .dropdown-item {
   color: var(--text-light);
 }
 
-body.dark-mode .dropdown-item:hover {
+body.dark-theme .dropdown-item:hover {
   background-color: #3d3d3d;
 }
 
-body.dark-mode .text-muted {
-  color: #b0b0b0 !important;
+body.dark-theme .text-muted {
+  color: var(--text-muted-dark) !important;
+}
+
+/* Additional Dark Mode Text Styles */
+body.dark-theme .card-title,
+body.dark-theme .modal-title,
+body.dark-theme h1, 
+body.dark-theme h2, 
+body.dark-theme h3, 
+body.dark-theme h4, 
+body.dark-theme h5, 
+body.dark-theme h6 {
+  color: var(--text-light);
+}
+
+body.dark-theme .form-label {
+  color: var(--text-light);
+}
+
+body.dark-theme .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Modal styles for dark mode */
+body.dark-theme .modal-body {
+  color: var(--text-light);
+}
+
+/* Input field placeholders in dark mode */
+body.dark-theme .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 /* Hover Effects */

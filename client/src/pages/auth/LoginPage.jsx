@@ -48,7 +48,7 @@ const LoginPage = () => {
         setTimeout(() => {
           dispatch(login(combined));
           navigate("/dashboard");
-        }, 1000);
+        }, 300);
       }
     } catch (error) {
       if (error.response) {
@@ -136,4 +136,5 @@ const LoginPage = () => {
   );
 };
 
-export default NotAuth(LoginPage);
+const AuthGuard = NotAuth(LoginPage);
+export default AuthGuard;
