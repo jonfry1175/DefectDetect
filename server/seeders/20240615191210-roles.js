@@ -2,7 +2,7 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     /**
      * Add seed commands here.
      *
@@ -13,18 +13,18 @@ module.exports = {
      * }], {});
     */
 
-    // await queryInterface.bulkInsert('Roles', [
-    //   {
-    //     name: 'QA',
-    //     createdAt: new Date(),
-    //     updatedAt: new Date()
-    //   },
-    //   {
-    //     name: 'Developer',
-    //     createdAt: new Date(),
-    //     updatedAt: new Date()
-    //   }
-    // ])
+    await queryInterface.bulkInsert('Roles', [
+      {
+        name: 'QA',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        name: 'Developer',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ])
 
     // create level data
     await queryInterface.bulkInsert('Levels', [
@@ -45,19 +45,19 @@ module.exports = {
       }
     ])
 
-    // await queryInterface.bulkInsert("Users", [
-    //   {
-    //     name: "Admin",
-    //     email: "X6qJt@example.com",
-    //     password: "admin",
-    //     role_id: 11,
-    //     createdAt: new Date(),
-    //     updatedAt: new Date()
-    //   }
-    // ])
+    await queryInterface.bulkInsert("Users", [
+      {
+        name: "Admin",
+        email: "X6qJt@example.com",
+        password: "admin",
+        role_id: 11,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ])
   },
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     /**
      * Add commands to revert seed here.
      *
@@ -66,5 +66,14 @@ module.exports = {
      */
 
     // await queryInterface.bulkDelete('Roles', null, {})
+
+    await queryInterface.bulkDelete('Roles', {
+      name: ['QA', 'Developer']
+    }, {});
+
+    await queryInterface.bulkDelete('Levels', null, {});
+    await queryInterface.bulkDelete('Users', {
+      email: ['X6qJt@example.com']
+    }, {});
   }
 };

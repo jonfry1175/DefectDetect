@@ -1,6 +1,7 @@
 const { User, Bug, Role } = require('../models');
 const { encryptPassword, decryptPassword } = require('../helpers/bcrypt');
 const { tokenGenerator } = require('../helpers/jsonwebtoken');
+const { handleError } = require('../helpers/errorHandler');
 class UserController {
     static async getAll(req, res) {
         try {
@@ -9,7 +10,7 @@ class UserController {
             });
             res.status(200).json(users);
         } catch (err) {
-            res.status(500).json(err);
+            handleError(err, req, res, 'Failed to fetch users');
         }
     }
     static async register(req, res) {
@@ -48,17 +49,7 @@ class UserController {
 
             console.log(hashedPassword);
         } catch (error) {
-            if (error.name === 'SequelizeValidationError') {
-                const errors = error.errors.map((err) => err.message);
-                return res.status(400).json({ errors });
-
-            }
-
-            res.status(500).json(error.message);
-
-
-
-
+            handleError(error, req, res, 'Failed to register user');
         }
     }
     static async login(req, res) {
@@ -76,7 +67,7 @@ class UserController {
 
             res.status(200).json(token);
         } catch (error) {
-            res.status(500).json(error.message);
+            handleError(error, req, res, 'Failed to login user');
         }
     }
 }

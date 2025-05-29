@@ -1,4 +1,5 @@
 const { Bug, User, Level } = require("../models");
+const { handleError } = require("../helpers/errorHandler");
 
 class BugController {
     static async getAll(req, res) {
@@ -12,7 +13,7 @@ class BugController {
             });
             res.status(200).json(bugs);
         } catch (err) {
-            res.status(500).json(err.message);
+            handleError(err, req, res, 'Failed to fetch bugs');
         }
     }
 
@@ -33,10 +34,7 @@ class BugController {
             });
             res.status(201).json(newBug);
         } catch (err) {
-            if (err.name === 'SequelizeValidationError') {
-                return res.status(400).json({ message: err.message });
-            }
-            res.status(500).json(err.message);
+            handleError(err, req, res, 'Failed to create bug');
         }
     }
 
@@ -55,7 +53,7 @@ class BugController {
             const bug = await Bug.update({ is_solved: true }, { where: { id } });
             res.status(200).json({message: 'Bug solved successfully'});
         } catch (err) {
-            res.status(500).json(err.message);
+            handleError(err, req, res, 'Failed to update bug status');
         }
     }
 
@@ -74,7 +72,7 @@ class BugController {
             }
             res.status(200).json(foundId);
         } catch (err) {
-            res.status(500).json(err.message);
+            handleError(err, req, res, 'Failed to fetch bug by ID');
         }
     }
 }

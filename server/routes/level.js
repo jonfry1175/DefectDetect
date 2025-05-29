@@ -1,5 +1,6 @@
 const levelRouter = require("express").Router();
-const {Level } = require("../models");
+const { handleError } = require("../helpers/errorHandler");
+const { Level } = require("../models");
 
 levelRouter.get("/", (req, res) => {
     Level.findAll()
@@ -7,7 +8,7 @@ levelRouter.get("/", (req, res) => {
             res.status(200).json(levels);
         })
         .catch((err) => {
-            res.status(500).json(err.message);
+            handleError(err, req, res, 'Failed to fetch levels');
         });
 });
 

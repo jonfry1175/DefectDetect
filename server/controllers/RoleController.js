@@ -1,4 +1,5 @@
 const { Role, User } = require("../models");
+const { handleError } = require("../helpers/errorHandler");
 
 class RoleController {
     static async getAll(req, res) {
@@ -8,7 +9,7 @@ class RoleController {
             });
             res.status(200).json(roles);
         } catch (err) {
-            res.status(500).json(err);
+            handleError(err, req, res, 'Failed to fetch roles');
         }
     }
 }

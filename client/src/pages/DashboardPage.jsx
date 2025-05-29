@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/actions/authActions";
 import { IsAuth } from "../hoc/checkAuth";
@@ -20,7 +20,10 @@ const DashboardPage = () => {
   const dataBug = globalState.bug.bugs;
   const dataAuth = globalState.auth;
   const show = globalState.show;
- 
+
+  const [bugDetail, setBugDetail] = useState(null);
+
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const roleId = dataAuth.authData?.role_id;
@@ -34,7 +37,7 @@ const DashboardPage = () => {
 
   const token = dataAuth.authData?.token;
 
-  const getAllBug = async () => {
+  const getAllBug = useCallback(async () => {
     try {
       const result = await axiosInstance.get(`/bugs`, {
         headers: {
@@ -46,9 +49,8 @@ const DashboardPage = () => {
       console.log(error);
       toast.error("server error");
     }
-  };
+  }, [token, dispatch]);
 
-  const [bugDetail, setBugDetail] = useState(null);
 
   const getBugDetailById = async (id) => {
     try {
@@ -90,7 +92,7 @@ const DashboardPage = () => {
       "Are you sure?",
       "Do you want to logout?",
       () => handleLogout(),
-      () => {}
+      () => { }
     );
   };
 
@@ -121,7 +123,7 @@ const DashboardPage = () => {
       "Are you sure?",
       "Do you want to solve this bug?",
       () => changeStatus(id),
-      () => {}
+      () => { }
     );
   };
 
@@ -135,7 +137,7 @@ const DashboardPage = () => {
     // console.log(bugDetail)
     // console.log(dataBug.length)
 
-  }, []);
+  }, [getAllBug]);
 
   useEffect(() => {
     // getAllBug();
@@ -157,50 +159,50 @@ const DashboardPage = () => {
         <Button variant="danger" onClick={confirmLogout}>
           logout
         </Button>
-         {/* modal create bug */}
+        {/* modal create bug */}
         <Modal show={modalCreate} onHide={handleClose}>
           <ModalCreate handleFetchData={getAllBug} />
         </Modal>
         {/* modal view bug */}
         <Modal show={bugModalDetail} onHide={handleCloseBugModal}>
-          <ModalBug 
-          onClose={handleCloseBugModal} 
-          title={bugDetail?.title}
-          image={bugDetail?.image}
-          actualResult={bugDetail?.actual_result}
-          expectedResult={bugDetail?.expected_result}
-          createdBy={bugDetail?.User?.name}
-          buildVersion={bugDetail?.build_version}
-          priorityLevel={bugDetail?.PriorityLevel?.name}
-          severityLevel={bugDetail?.SeverityLevel?.name}
-          status={bugDetail?.is_solved}
-          roleId={roleId}
-          onClick={() => confirmChangeStatus(bugDetail?.id)}
+          <ModalBug
+            onClose={handleCloseBugModal}
+            title={bugDetail?.title}
+            image={bugDetail?.image}
+            actualResult={bugDetail?.actual_result}
+            expectedResult={bugDetail?.expected_result}
+            createdBy={bugDetail?.User?.name}
+            buildVersion={bugDetail?.build_version}
+            priorityLevel={bugDetail?.PriorityLevel?.name}
+            severityLevel={bugDetail?.SeverityLevel?.name}
+            status={bugDetail?.is_solved}
+            roleId={roleId}
+            onClick={() => confirmChangeStatus(bugDetail?.id)}
           />
         </Modal>
         <div className="">
           <div className="">
             {
-            dataBug.length === 0 ? (
-              <Loader />
-            ) : (
-              dataBug.map((data) => (
-                <CardBug
-                  key={data.id}
-                  title={data.title}
-                  actualResult={data.actual_result}
-                  expectedResult={data.expected_result}
-                  image={data.image}
-                  status={data.is_solved}
-                  priorityLevel={data.PriorityLevel?.name}
-                  createdBy={data.User?.name}
-                  severityLevel={data.SeverityLevel?.name}
-                  onClick={() => confirmChangeStatus(data.id)}
-                  onClickView={() => handleShowBugModal(data.id)}
-                  roleId={roleId}
-                />
-              ))
-            )}
+              dataBug.length === 0 ? (
+                <Loader />
+              ) : (
+                dataBug.map((data) => (
+                  <CardBug
+                    key={data.id}
+                    title={data.title}
+                    actualResult={data.actual_result}
+                    expectedResult={data.expected_result}
+                    image={data.image}
+                    status={data.is_solved}
+                    priorityLevel={data.PriorityLevel?.name}
+                    createdBy={data.User?.name}
+                    severityLevel={data.SeverityLevel?.name}
+                    onClick={() => confirmChangeStatus(data.id)}
+                    onClickView={() => handleShowBugModal(data.id)}
+                    roleId={roleId}
+                  />
+                ))
+              )}
           </div>
         </div>
       </div>
@@ -209,4 +211,5 @@ const DashboardPage = () => {
   );
 };
 
-export default IsAuth(DashboardPage);
+const WrappedDashboardPage = IsAuth(DashboardPage);
+export default WrappedDashboardPage;
