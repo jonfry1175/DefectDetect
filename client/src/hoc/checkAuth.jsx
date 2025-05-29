@@ -1,22 +1,21 @@
-import React from 'react'
 import { useSelector } from 'react-redux'
 import { Navigate, useLocation } from 'react-router-dom'
 
 const IsAuth = (WrappedComponent) => {
-    const authHoc = (props) => {
-        const auth = useSelector(state => state.auth) 
+    const AuthHoc = (props) => {
+        const auth = useSelector(state => state.auth)
         if (!auth.authData) {
             return <Navigate to="/login" />
         }
         return <WrappedComponent {...props} />
     }
 
-    return authHoc
+    return AuthHoc
 }
 
 const NotAuth = (WrappedComponent) => {
-    const authHoc = (props) => {
-        const auth = useSelector(state => state.auth) 
+    const AuthHoc = (props) => {
+        const auth = useSelector(state => state.auth)
         const location = useLocation()
         if (auth.authData) {
             // mengembalikan ke navigasi sebelumnya
@@ -26,7 +25,7 @@ const NotAuth = (WrappedComponent) => {
         return <WrappedComponent {...props} />
     }
 
-    return authHoc
+    return AuthHoc
 }
 
 

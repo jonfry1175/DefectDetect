@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useCallback } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import {  hideModalCreate } from "../../store/actions/showAction";
+import { hideModalCreate } from "../../store/actions/showAction";
 import { toast } from "sonner";
 import { setLevel } from "../../store/actions/levelActions";
 import axiosInstance from "../../lib/axios";
@@ -11,8 +11,9 @@ import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addBug } from "../../store/actions/bugActions";
+import PropTypes from 'prop-types';
 
-function ModalCreate({handleFetchData}) {
+function ModalCreate({ handleFetchData }) {
   const reduxData = useSelector((state) => state);
   const level = reduxData.level.level;
   const dataAuth = reduxData.auth.authData;
@@ -50,7 +51,7 @@ function ModalCreate({handleFetchData}) {
     resolver: zodResolver(validateForm),
   });
 
-  const getLevel = async () => {
+  const getLevel = useCallback(async () => {
     try {
       const result = await axiosInstance.get("/levels");
       dispatch(setLevel(result.data));
@@ -58,7 +59,7 @@ function ModalCreate({handleFetchData}) {
       console.log(error);
       toast.error(error);
     }
-  };
+  }, [dispatch]);
 
   const handleClose = () => dispatch(hideModalCreate());
 
@@ -83,7 +84,7 @@ function ModalCreate({handleFetchData}) {
         form.reset();
         handleFetchData();
         handleClose();
-        
+
       }
     } catch (error) {
       console.log(error.response);
@@ -93,7 +94,7 @@ function ModalCreate({handleFetchData}) {
 
   useEffect(() => {
     getLevel();
-  }, []);
+  }, [getLevel]);
 
   // useEffect(() => {
   //   console.log(reduxData.bug.bugs);
@@ -220,12 +221,12 @@ function ModalCreate({handleFetchData}) {
                 return (
                   <Form.Group className="mb-3">
                     <Form.Label>Severity Level</Form.Label>
-                    <Form.Select 
-                    {...field}
-                    isInvalid={!!fieldState.error}
-                    onChange={(e) => {
-                      field.onChange(parseInt(e.target.value))
-                    }}>
+                    <Form.Select
+                      {...field}
+                      isInvalid={!!fieldState.error}
+                      onChange={(e) => {
+                        field.onChange(parseInt(e.target.value))
+                      }}>
                       <option value={0} disabled>Select Severity Level</option>
                       {level.map((level) => (
                         <option key={level.id} value={level.id}>
@@ -248,11 +249,11 @@ function ModalCreate({handleFetchData}) {
                   <Form.Group className="mb-3">
                     <Form.Label>Priotity Level</Form.Label>
                     <Form.Select
-                     {...field}
-                     isInvalid={!!fieldState.error}
-                     onChange={(e) => {
-                       field.onChange(parseInt(e.target.value))
-                     }}
+                      {...field}
+                      isInvalid={!!fieldState.error}
+                      onChange={(e) => {
+                        field.onChange(parseInt(e.target.value))
+                      }}
                     >
                       <option value={0} disabled>Select Priority Level</option>
                       {level.map((level) => (
@@ -282,5 +283,9 @@ function ModalCreate({handleFetchData}) {
     </>
   );
 }
+
+ModalCreate.propTypes = {
+  handleFetchData: PropTypes.func.isRequired
+};
 
 export default ModalCreate;

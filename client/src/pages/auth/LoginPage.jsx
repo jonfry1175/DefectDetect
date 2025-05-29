@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, Form } from "react-bootstrap";
 import AuthImg from "../../components/AuthImg";
 import Footer from "../../components/Footer";

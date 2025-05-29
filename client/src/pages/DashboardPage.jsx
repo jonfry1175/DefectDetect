@@ -8,6 +8,7 @@ import axiosInstance from "../lib/axios";
 import { setBug } from "../store/actions/bugActions";
 import CardBug from "../components/cards/CardBug";
 import Loader from "../components/Loader";
+import EmptyState from "../components/EmptyState";
 import { hideModalBugdetail, hideModalCreate, showModalBugdetail, showModalCreate } from "../store/actions/showAction";
 import { Modal, Button } from "react-bootstrap";
 import ModalCreate from "../components/modals/ModalCreate";
@@ -22,7 +23,7 @@ const DashboardPage = () => {
   const show = globalState.show;
 
   const [bugDetail, setBugDetail] = useState(null);
-
+  const [isLoading, setIsLoading] = useState(true);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -30,15 +31,14 @@ const DashboardPage = () => {
   const bugModalDetail = show.showBugModal;
   const modalCreate = show.showBugModalCreate;
 
-  const QA_ID = +import.meta.env.VITE_QA_ROLE_ID;
   const DEV_ID = +import.meta.env.VITE_DEV_ROLE_ID;
-  const matchQA = roleId === QA_ID;
   const matchDev = roleId === DEV_ID;
 
   const token = dataAuth.authData?.token;
 
   const getAllBug = useCallback(async () => {
     try {
+      setIsLoading(true);
       const result = await axiosInstance.get(`/bugs`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -48,11 +48,13 @@ const DashboardPage = () => {
     } catch (error) {
       console.log(error);
       toast.error("server error");
+    } finally {
+      setIsLoading(false);
     }
   }, [token, dispatch]);
 
 
-  const getBugDetailById = async (id) => {
+  const handleShowBugModal = async (id) => {
     try {
       const result = await axiosInstance.get(`/bugs/${id}`, {
         headers: {
@@ -60,15 +62,11 @@ const DashboardPage = () => {
         },
       })
       setBugDetail(result.data)
+      dispatch(showModalBugdetail());
     } catch (error) {
       console.log(error.message)
       toast.error("server error");
     }
-  }
-
-  const handleShowBugModal = (id) => {
-    getBugDetailById(id)
-    dispatch(showModalBugdetail());
   };
   const handleCloseBugModal = () => {
     dispatch(hideModalBugdetail())
@@ -144,7 +142,6 @@ const DashboardPage = () => {
     console.log(dataBug.length)
   }, [dataBug]);
 
-
   return (
     <div>
       <div className=" min-vh-100">
@@ -159,50 +156,70 @@ const DashboardPage = () => {
         <Button variant="danger" onClick={confirmLogout}>
           logout
         </Button>
+
         {/* modal create bug */}
         <Modal show={modalCreate} onHide={handleClose}>
           <ModalCreate handleFetchData={getAllBug} />
         </Modal>
+
         {/* modal view bug */}
         <Modal show={bugModalDetail} onHide={handleCloseBugModal}>
-          <ModalBug
-            onClose={handleCloseBugModal}
-            title={bugDetail?.title}
-            image={bugDetail?.image}
-            actualResult={bugDetail?.actual_result}
-            expectedResult={bugDetail?.expected_result}
-            createdBy={bugDetail?.User?.name}
-            buildVersion={bugDetail?.build_version}
-            priorityLevel={bugDetail?.PriorityLevel?.name}
-            severityLevel={bugDetail?.SeverityLevel?.name}
-            status={bugDetail?.is_solved}
-            roleId={roleId}
-            onClick={() => confirmChangeStatus(bugDetail?.id)}
-          />
+          {bugDetail ? (
+            <ModalBug
+              onClose={handleCloseBugModal}
+              title={bugDetail.title}
+              image={bugDetail.image}
+              actualResult={bugDetail.actual_result}
+              expectedResult={bugDetail.expected_result}
+              createdBy={bugDetail.User?.name}
+              buildVersion={bugDetail.build_version}
+              priorityLevel={bugDetail.PriorityLevel?.name}
+              severityLevel={bugDetail.SeverityLevel?.name}
+              status={bugDetail.is_solved}
+              roleId={roleId}
+              onClick={() => confirmChangeStatus(bugDetail.id)}
+            />
+          ) : (
+            <div className="d-flex justify-content-center align-items-center p-4">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          )}
         </Modal>
+
         <div className="">
           <div className="">
-            {
-              dataBug.length === 0 ? (
-                <Loader />
-              ) : (
-                dataBug.map((data) => (
-                  <CardBug
-                    key={data.id}
-                    title={data.title}
-                    actualResult={data.actual_result}
-                    expectedResult={data.expected_result}
-                    image={data.image}
-                    status={data.is_solved}
-                    priorityLevel={data.PriorityLevel?.name}
-                    createdBy={data.User?.name}
-                    severityLevel={data.SeverityLevel?.name}
-                    onClick={() => confirmChangeStatus(data.id)}
-                    onClickView={() => handleShowBugModal(data.id)}
-                    roleId={roleId}
-                  />
-                ))
-              )}
+            {isLoading ? (
+              <Loader />
+            ) : dataBug.length === 0 ? (
+              <EmptyState
+                icon="bi-bug-fill"
+                title="Belum ada bug ditemukan"
+                description={matchDev
+                  ? "Belum ada bug yang dilaporkan untuk saat ini."
+                  : "Mulai dengan membuat laporan bug pertama Anda."
+                }
+                textColor="text-light"
+              />
+            ) : (
+              dataBug.map((data) => (
+                <CardBug
+                  key={data.id}
+                  title={data.title}
+                  actualResult={data.actual_result}
+                  expectedResult={data.expected_result}
+                  image={data.image}
+                  status={data.is_solved}
+                  priorityLevel={data.PriorityLevel?.name}
+                  createdBy={data.User?.name}
+                  severityLevel={data.SeverityLevel?.name}
+                  onClick={() => confirmChangeStatus(data.id)}
+                  onClickView={() => handleShowBugModal(data.id)}
+                  roleId={roleId}
+                />
+              ))
+            )}
           </div>
         </div>
       </div>

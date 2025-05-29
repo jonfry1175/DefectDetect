@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useCallback } from "react";
 import { Card, Form } from "react-bootstrap";
 import AuthImg from "../../components/AuthImg";
 import Footer from "../../components/Footer";
@@ -81,7 +81,7 @@ const RegisterPage = () => {
     }
   };
 
-  const getAllRoles = async () => {
+  const getAllRoles = useCallback(async () => {
     try {
       const result = await axiosInstance.get("/roles");
       dispatch(setRole(result.data));
@@ -89,11 +89,11 @@ const RegisterPage = () => {
       console.log(error.message);
       toast.error("server error");
     }
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     getAllRoles();
-  }, []);
+  }, [getAllRoles]);
 
   return (
     <div className="min-vh-100">
@@ -223,4 +223,7 @@ const RegisterPage = () => {
   );
 };
 
-export default NotAuth(RegisterPage);
+const RegisterPageWithAuth = NotAuth(RegisterPage);
+RegisterPageWithAuth.displayName = 'RegisterPage';
+
+export default RegisterPageWithAuth;
