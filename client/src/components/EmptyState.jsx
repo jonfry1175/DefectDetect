@@ -19,11 +19,15 @@ const EmptyState = ({
     return (
         <div className="d-flex flex-column align-items-center justify-content-center py-5">
             <div className="text-center">
-                <i className={`bi ${icon} display-1 ${textColor} mb-3`}></i>
-                <h3 className={`${textColor} mb-3`}>{title}</h3>
-                <p className={`${textColor} mb-4`}>
+                <div className="bg-dark bg-opacity-25 rounded-circle p-4 mb-4 shadow-sm"
+                    style={{ width: '100px', height: '100px', margin: 'auto' }}>
+                    <i className={`bi ${icon} display-1 ${textColor}`}></i>
+                </div>
+                <h3 className={`${textColor} fw-bold mb-3`}>{title}</h3>
+                <p className={`${textColor} opacity-75 mb-4 mx-auto`} style={{ maxWidth: "500px" }}>
                     {description}
                 </p>
+                <div className="border-top border-secondary opacity-25 pt-4 mt-2 w-50 mx-auto"></div>
             </div>
         </div>
     );

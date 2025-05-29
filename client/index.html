@@ -1,10 +1,87 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <title>DefectDetect</title>
+    <style>
+      body {
+        font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, sans-serif;
+      }
+      /* Card Animations & Effects */
+      .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+      }
+      .transition-all {
+        transition: all 0.3s ease;
+      }
+      .card-img-hover:hover {
+        transform: scale(1.05);
+      }
+      /* Custom Button Styles */
+      .btn {
+        transition: all 0.3s ease;
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, #3a66db 0%, #5d7bf3 100%);
+        border: none;
+      }
+      .btn-danger {
+        background: linear-gradient(135deg, #e53935 0%, #e57373 100%);
+        border: none;
+      }
+      .btn-success {
+        background: linear-gradient(135deg, #43a047 0%, #66bb6a 100%);
+        border: none;
+      }
+      /* Custom Form Controls */
+      .form-control:focus,
+      .form-select:focus {
+        box-shadow: 0 0 0 3px rgba(58, 102, 219, 0.2);
+        border-color: #3a66db;
+      }
+      /* Badge Styles */
+      .badge {
+        font-weight: 500;
+        letter-spacing: 0.3px;
+      }
+      /* Card Design */
+      .card {
+        border-radius: 12px;
+      }
+      /* Scrollbar styling */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #2d3748;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #4a5568;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #718096;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>

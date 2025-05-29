@@ -11,3 +11,7 @@ export const hideModalCreate = () => ({
     type: "HIDE_BUG_MODAL_CREATE",
 })
 
+export const toggleDarkMode = () => ({
+    type: "TOGGLE_DARK_MODE",
+})
+

@@ -1,6 +1,7 @@
 const DEFAULT_STATE = {
     showBugModal: false,
     showBugModalCreate: false,
+    darkMode: false,
 }
 
 export const showReducer = (state = DEFAULT_STATE, action) => {
@@ -10,7 +11,7 @@ export const showReducer = (state = DEFAULT_STATE, action) => {
                 ...state,
                 showBugModal: true
             }
-            case "HIDE_BUG_MODAL_DETAIL":
+        case "HIDE_BUG_MODAL_DETAIL":
             return {
                 ...state,
                 showBugModal: false
@@ -24,6 +25,11 @@ export const showReducer = (state = DEFAULT_STATE, action) => {
             return {
                 ...state,
                 showBugModalCreate: false
+            }
+        case "TOGGLE_DARK_MODE":
+            return {
+                ...state,
+                darkMode: !state.darkMode
             }
         case "HIDE":
             return {
