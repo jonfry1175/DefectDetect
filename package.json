@@ -1,8 +1,12 @@
 {
-  "name": "DefectDetect",
+  "name": "defect-detect",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "workspaces": [
+    "server",
+    "client"
+  ],
   "scripts": {
     "install-client": "cd client && npm install",
     "build-client": "cd client && npm run build",
