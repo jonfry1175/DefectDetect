@@ -6,17 +6,15 @@ module.exports = {
     // Helper function to check and create records
     async function checkAndCreate(table, records, uniqueField) {
       for (const item of records) {
-        // Check if record exists
-        const existingRecord = await queryInterface.sequelize.query(
-          `SELECT id FROM "${table}" WHERE "${uniqueField}" = ?`,
-          {
-            replacements: [item[uniqueField]],
-            type: queryInterface.sequelize.QueryTypes.SELECT
+        // Check if record exists using findOne
+        const existingRecord = await queryInterface.rawSelect(table, {
+          where: {
+            [uniqueField]: item[uniqueField]
           }
-        );
+        }, ['id']);
 
         // Create only if doesn't exist
-        if (existingRecord.length === 0) {
+        if (!existingRecord) {
           await queryInterface.bulkInsert(table, [item], {});
           console.log(`Created ${item[uniqueField]} in ${table}`);
         } else {
@@ -64,17 +62,28 @@ module.exports = {
     // Check and create Levels
     await checkAndCreate('Levels', levels, 'name');
 
-    // Users - keeping original implementation
-    await queryInterface.bulkInsert("Users", [
-      {
-        name: "Admin",
-        email: "X6qJt@example.com",
-        password: "admin",
-        role_id: 11,
-        createdAt: new Date(),
-        updatedAt: new Date()
+    // Users - checking first before inserting
+    const existingAdmin = await queryInterface.rawSelect('Users', {
+      where: {
+        email: 'X6qJt@example.com'
       }
-    ]);
+    }, ['id']);
+
+    if (!existingAdmin) {
+      await queryInterface.bulkInsert("Users", [
+        {
+          name: "Admin",
+          email: "X6qJt@example.com",
+          password: "admin",
+          role_id: 11,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }
+      ]);
+      console.log('Created Admin user');
+    } else {
+      console.log('Admin user already exists');
+    }
   },
 
   async down(queryInterface, Sequelize) {
