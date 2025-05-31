@@ -94,10 +94,8 @@ const DashboardPage = () => {
 
   const handleLogout = () => {
     toast.success("Logout berhasil");
-    setTimeout(() => {
-      dispatch(logout());
-      navigate("/login");
-    }, 1000);
+    dispatch(logout());
+    navigate("/login");
   };
 
   const confirmLogout = () => {

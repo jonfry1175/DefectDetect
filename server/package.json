@@ -7,10 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon app.js",
     "db:create": "sequelize-cli db:create",
-    "migrate": "sequelize-cli db:migrate",
+    "db:migrate": "sequelize-cli db:migrate",
     "undo-all": "sequelize-cli db:migrate:undo:all",
     "undo": "sequelize-cli db:migrate:undo",
-    "seed": "sequelize-cli db:seed:all"
+    "db:seed": "sequelize-cli db:seed:all"
   },
   "keywords": [],
   "author": "",

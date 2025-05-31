@@ -268,8 +268,7 @@ function ModalCreate({ handleFetchData }) {
                     >
                       <option value={0}>Select severity</option>
                       {level
-                        ?.filter((e) => e.type === "severity")
-                        .map((e) => (
+                        ?.map((e) => (
                           <option key={e.id} value={e.id}>
                             {e.name}
                           </option>
@@ -301,8 +300,7 @@ function ModalCreate({ handleFetchData }) {
                     >
                       <option value={0}>Select priority</option>
                       {level
-                        ?.filter((e) => e.type === "priority")
-                        .map((e) => (
+                        ?.map((e) => (
                           <option key={e.id} value={e.id}>
                             {e.name}
                           </option>

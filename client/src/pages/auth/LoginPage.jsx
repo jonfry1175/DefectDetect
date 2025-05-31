@@ -45,10 +45,8 @@ const LoginPage = () => {
           ...decoded,
           token: result.data
         }
-        setTimeout(() => {
-          dispatch(login(combined));
-          navigate("/dashboard");
-        }, 300);
+        dispatch(login(combined));
+        navigate("/dashboard");
       }
     } catch (error) {
       if (error.response) {

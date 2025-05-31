@@ -58,10 +58,8 @@ const RegisterPage = () => {
       const result = await axiosInstance.post("/users/register", data);
       if (result.status === 201) {
         toast.success("Register success");
-        setTimeout(() => {
-          form.reset();
-          navigate("/login");
-        }, 1000);
+        form.reset();
+        navigate("/login");
         // form.reset();
         // navigate("/login");
       }
