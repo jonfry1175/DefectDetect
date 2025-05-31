@@ -46,7 +46,7 @@ const LoginPage = () => {
           token: result.data
         }
         dispatch(login(combined));
-        navigate("/dashboard");
+        navigate("/");
       }
     } catch (error) {
       if (error.response) {
