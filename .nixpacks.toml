@@ -1,17 +1,4 @@
-[phases.setup]
-nixPkgs = ['nodejs_20', 'npm']
-aptPkgs = []
+providers = ["node"]
 
 [phases.install]
-cmds = [
-  'cd server && npm install'
-]
-
-[phases.build]
-cmds = []
-
-[start]
-cmd = 'cd server && npm start'
-
-[nixpacks]
-plan-path = "./nixpacks.plan"
+cmds = ["npm install -g corepack", "corepack enable", "corepack prepare pnpm@9.1.0 --activate", "pnpm install"]
