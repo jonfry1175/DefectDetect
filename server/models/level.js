@@ -28,5 +28,17 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Level',
   });
+
+  // unique constraint for name
+  Level.beforeCreate(async (level, options) => {
+    const existingLevel = await Level.findOne({
+      where: {
+        name: level.name
+      }
+    });
+    if (existingLevel) {
+      throw new Error('Level with this name already exists');
+    }
+  });
   return Level;
 };
