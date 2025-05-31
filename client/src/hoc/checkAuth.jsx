@@ -18,7 +18,7 @@ const NotAuth = (WrappedComponent) => {
         const auth = useSelector(state => state.auth)
         if (auth.authData) {
             // mengembalikan ke navigasi sebelumnya
-            return <Navigate to={"/dashboard"} />
+            return <Navigate to={"/"} />
         }
 
         return <WrappedComponent {...props} />
