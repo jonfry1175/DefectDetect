@@ -1,6 +1,19 @@
+# Folder yang tidak diperlukan
+
+client/
+node_modules/
+.git/
+
+# PNPM files yang menyebabkan deteksi
+
 pnpm-lock.yaml
 pnpm-workspace.yaml
 .npmrc
+
+# File konfigurasi yang tidak diperlukan di deployment
+
+.nixpacks.toml
+nixpacks.plan
 
 server/pnpm-lock.yaml
 server/pnpm-workspace.yaml
