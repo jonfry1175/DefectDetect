@@ -1,0 +1,9 @@
+[build]
+builder = "nixpacks"
+buildCommand = "cd server && pnpm install"
+
+[deploy]
+startCommand = "cd server && pnpm start"
+healthcheckPath = "/"
+healthcheckTimeout = 100
+restartPolicyType = "on-failure"
