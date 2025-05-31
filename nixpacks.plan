@@ -1,0 +1,34 @@
+{
+  "providers": [
+    {
+      "name": "nodejs"
+    }
+  ],
+  "buildImage": "ghcr.io/railwayapp/nixpacks:ubuntu-1745885067",
+  "variables": {
+    "CI": "true",
+    "NPM_CONFIG_PRODUCTION": "false",
+    "NODE_ENV": "production",
+    "NIXPACKS_NODE_VERSION": "20"
+  },
+  "phases": {
+    "setup": {
+      "nixPkgs": [
+        "nodejs_20",
+        "npm"
+      ],
+      "aptPkgs": []
+    },
+    "install": {
+      "cmds": [
+        "cd server && npm install"
+      ]
+    },
+    "build": {
+      "cmds": []
+    }
+  },
+  "start": {
+    "cmd": "cd server && npm start"
+  }
+}
