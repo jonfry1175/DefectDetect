@@ -3,17 +3,30 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    /**
-     * Add seed commands here.
-     *
-     * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
-     *   isBetaMember: false
-     * }], {});
-    */
+    // Helper function to check and create records
+    async function checkAndCreate(table, records, uniqueField) {
+      for (const item of records) {
+        // Check if record exists
+        const existingRecord = await queryInterface.sequelize.query(
+          `SELECT id FROM "${table}" WHERE "${uniqueField}" = ?`,
+          {
+            replacements: [item[uniqueField]],
+            type: queryInterface.sequelize.QueryTypes.SELECT
+          }
+        );
 
-    await queryInterface.bulkInsert('Roles', [
+        // Create only if doesn't exist
+        if (existingRecord.length === 0) {
+          await queryInterface.bulkInsert(table, [item], {});
+          console.log(`Created ${item[uniqueField]} in ${table}`);
+        } else {
+          console.log(`${item[uniqueField]} already exists in ${table}`);
+        }
+      }
+    }
+
+    // Roles data
+    const roles = [
       {
         name: 'QA',
         createdAt: new Date(),
@@ -24,10 +37,10 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date()
       }
-    ])
+    ];
 
-    // create level data
-    await queryInterface.bulkInsert('Levels', [
+    // Levels data
+    const levels = [
       {
         name: 'Low',
         createdAt: new Date(),
@@ -43,8 +56,15 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date()
       }
-    ])
+    ];
 
+    // Check and create Roles
+    await checkAndCreate('Roles', roles, 'name');
+
+    // Check and create Levels
+    await checkAndCreate('Levels', levels, 'name');
+
+    // Users - keeping original implementation
     await queryInterface.bulkInsert("Users", [
       {
         name: "Admin",
@@ -54,26 +74,21 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date()
       }
-    ])
+    ]);
   },
 
   async down(queryInterface, Sequelize) {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
-
-    // await queryInterface.bulkDelete('Roles', null, {})
-
-    await queryInterface.bulkDelete('Roles', {
-      name: ['QA', 'Developer']
-    }, {});
-
-    await queryInterface.bulkDelete('Levels', null, {});
+    // Delete users first
     await queryInterface.bulkDelete('Users', {
       email: ['X6qJt@example.com']
+    }, {});
+
+    // Delete levels
+    await queryInterface.bulkDelete('Levels', null, {});
+
+    // Delete roles
+    await queryInterface.bulkDelete('Roles', {
+      name: ['QA', 'Developer']
     }, {});
   }
 };
